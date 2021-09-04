@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+    {% if title %}
+        <title>Flask Blog - {{ title }}</title>
+    {% else %}
+        <title>Flask Blog</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+<!--        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">-->
+<!--            <div class="container">-->
+<!--                <h3><a class="navbar-brand mr-4" href="/">The Zone ABESIT</a></h3>-->
+<!--              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--              </button>-->
+<!--              <div class="collapse navbar-collapse" id="navbarToggle">-->
+<!--                <div class="navbar-nav mr-auto">-->
+
+<!--                </div>-->
+<!--                &lt;!&ndash; Navbar Right Side &ndash;&gt;-->
+<!--                <ul class="navbar-nav">-->
+<!--                    <li><h6><a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a></h6></li>-->
+<!--                    <li><h6><a class="nav-item nav-link" href="/about">About</a></h6></li>-->
+<!--                    {% if current_user.is_authenticated %}-->
+<!--                        <li><h6><a class="nav-item nav-link" href="{{ url_for('account', user_id=current_user.user_id) }}">Account</a></h6></li>-->
+<!--                        <li><h6><a class="nav-item nav-link" href="{{ url_for('placed_student_gallery') }}">Placed Students</a></h6></li>-->
+<!--                        <li><h6 class="nav-item nav-link">Students</h6>-->
+<!--                            <ul>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('students', branch='CSE' , year='1') }}">1 Year</a></li>                                </li>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('students', branch='CSE' , year='2') }}">2 Year</a></li>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('students', branch='CSE' , year='3') }}">3 Year</a></li>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('students', branch='CSE' , year='4') }}">4 Year</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li><h6><label class="nav-item nav-link">Announcements</label></h6>-->
+<!--                            <ul>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('announcements', by='CRC') }}">CRC</a></li>-->
+<!--                                <li><a class="branch-text" href="{{ url_for('announcements', by='department') }}">Department</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li><h6><a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a></h6></li>-->
+<!--                    {% else %}-->
+<!--                        <li><h6><a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a></h6></li>-->
+<!--                        <li><h6><a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a></h6></li>-->
+<!--                    {% endif %}-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </nav>-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-steel fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color:#f8f9fa" href="{{ url_for('home') }}">The Zone ABESIT</a>
+            <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarText"
+            aria-controls="navbarText"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            >
+            <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{{ url_for('home') }}">Home</a>
+                </li>
+                {% if current_user.is_authenticated %}
+
+                {% if session['user'] == 'student' %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('account', user_id=current_user.user_id) }}">Account</a>
+                    </li>
+                {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Announcements</a>
+                        <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('announcements', by='CRC') }}">CRC</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('announcements', by='department') }}">Department</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Students</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for i in range(1,5) %}
+                            <li><a class="dropdown-item" href="{{ url_for('students', branch='CSE', year=i) }}">Year {{i}}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('placed_student_gallery') }}">Placed Students</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+            </div>
+        </div>
+    </nav>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+
+    <footer class="text-center text-lg-start" style="background-color:#525557;color:#fff">
+  <!-- Section: Social media -->
+<!--  <section-->
+<!--    class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom"-->
+<!--  >-->
+  <section
+    class="d-flex justify-content-center justify-content-lg-between  border-bottom"
+  >
+    <!-- Left -->
+    <div class="me-5 d-none d-lg-block">
+      <span></span>
+    </div>
+    <!-- Left -->
+
+    <!-- Right -->
+  </section>
+  <!-- Section: Social media -->
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-5">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-4 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            <i class="fas fa-gem me-3"></i>The Zone ABESIT
+          </h6>
+          <p>
+            The Zone ABESIT helps you to build your brand new resume very easily and to always be updated with
+              your department and CRC for different events.
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Contact
+          </h6>
+          <p><i class="fas fa-home me-3"></i>ABESIT, Ghaziabad Uttar Pradesh 201009</p>
+          <p>
+            <i class="fas fa-envelope me-3"></i>
+            info@abesit.in
+          </p>
+          <p><i class="fas fa-phone me-3"></i>+91-8448583371</p>
+          <p><i class="fas fa-print me-3"></i>+91-8448583370</p>
+        </div>
+        <!-- Grid column -->
+      </div>
+      <!-- Grid row -->
+    </div>
+  </section>
+  <!-- Section: Links  -->
+
+  <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" href="https://mdbootstrap.com/">Abesit.in</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    {% block script %}{% endblock script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+</body>
+</html>

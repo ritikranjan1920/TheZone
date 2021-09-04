@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="SignUp-container" style="height:100%">
+<div class="forms container-form" style="text-align:center; max-width:600px">
+    <ul class="tab-group">
+        <li class="tab active"><a href="#as_student">Student</a></li>
+        <li class="tab"><a href="#as_faculty">Faculty</a></li>
+        <li class="tab"><a href="#as_crc">CRC</a></li>
+    </ul>
+    <form method="post" action="#" id="as_student">
+        {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">SignUp as Student</legend>
+                <div class="row-display row-split">
+                    <div class="form-group" >
+                        {{ form.s_name.label(class="form-control-label") }}
+                        {% if form.s_name.errors %}
+                            {{ form.s_name(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.s_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.s_name(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.s_roll_no.label(class="form-control-label") }}
+                        {% if form.s_roll_no.errors %}
+                            {{ form.s_roll_no(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.s_roll_no.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.s_roll_no(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.s_email.label(class="form-control-label") }}
+                    {% if form.s_email.errors %}
+                        {{ form.s_email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.s_email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.s_email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="row-display row-split">
+                    <div class="form-group" >
+                        {{ form.s_year.label(class="form-control-label") }}
+                        {% if form.s_year.errors %}
+                            {{ form.s_year(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.s_year.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.s_year(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.s_mobile.label(class="form-control-label") }}
+                        {% if form.s_mobile.errors %}
+                            {{ form.s_mobile(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.s_mobile.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.s_mobile(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.s_branch.label(class="form-control-label") }}
+                    {% if form.s_branch.errors %}
+                        {{ form.s_branch(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.s_branch.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.s_branch(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.s_clg_name.label(class="form-control-label") }}
+                    {% if form.s_clg_name.errors %}
+                        {{ form.s_clg_name(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.s_clg_name.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.s_clg_name(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.s_password.label(class="form-control-label") }}
+                    {% if form.s_password.errors %}
+                        {{ form.s_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.s_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.s_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.s_confirm_password.label(class="form-control-label") }}
+                    {% if form.s_confirm_password.errors %}
+                        {{ form.s_confirm_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.s_confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.s_confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+          <div class="form-group">
+                {{ form.s_submit(class="btn button", style="margin-inline: auto") }}
+          </div>
+    </form>
+    <form method="post" action="#" id="as_faculty" style="display:none">
+          {{ department_form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">SignUp as Faculty</legend>
+                <div class="row-display row-split">
+                    <div class="form-group" >
+                        {{ department_form.d_name.label(class="form-control-label") }}
+                        {% if department_form.d_name.errors %}
+                            {{ department_form.d_name(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in department_form.d_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ department_form.d_name(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ department_form.d_emp_id.label(class="form-control-label") }}
+                        {% if department_form.d_emp_id.errors %}
+                            {{ department_form.d_emp_id(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in department_form.d_emp_id.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ department_form.d_emp_id(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_email.label(class="form-control-label") }}
+                    {% if department_form.d_email.errors %}
+                        {{ department_form.d_email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_mobile.label(class="form-control-label") }}
+                    {% if department_form.d_mobile.errors %}
+                        {{ department_form.d_mobile(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_mobile.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_mobile(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_branch.label(class="form-control-label") }}
+                    {% if department_form.d_branch.errors %}
+                        {{ department_form.d_branch(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_branch.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_branch(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_clg_name.label(class="form-control-label") }}
+                    {% if department_form.d_clg_name.errors %}
+                        {{ department_form.d_clg_name(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_clg_name.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_clg_name(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_password.label(class="form-control-label") }}
+                    {% if department_form.d_password.errors %}
+                        {{ department_form.d_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ department_form.d_confirm_password.label(class="form-control-label") }}
+                    {% if department_form.d_confirm_password.errors %}
+                        {{ department_form.d_confirm_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in department_form.d_confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ department_form.d_confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+          <div class="form-group">
+                {{ department_form.d_submit(class="btn button", style="margin-inline: auto") }}
+          </div>
+    </form>
+    <form method="post" action="#" id="as_crc" style="display:none">
+        {{ crc_form.hidden_tag() }}
+          <fieldset class="form-group">
+                <legend class="border-bottom mb-4">SignUp as CRC</legend>
+                <div class="row-display row-split">
+                    <div class="form-group" >
+                        {{ crc_form.c_name.label(class="form-control-label") }}
+                        {% if crc_form.c_name.errors %}
+                            {{ crc_form.c_name(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in crc_form.c_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ crc_form.c_name(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ crc_form.c_emp_id.label(class="form-control-label") }}
+                        {% if crc_form.c_emp_id.errors %}
+                            {{ crc_form.c_emp_id(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in crc_form.c_emp_id.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ crc_form.c_emp_id(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ crc_form.c_email.label(class="form-control-label") }}
+                    {% if crc_form.c_email.errors %}
+                        {{ crc_form.c_email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in crc_form.c_email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ crc_form.c_email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ crc_form.c_mobile.label(class="form-control-label") }}
+                    {% if crc_form.c_mobile.errors %}
+                        {{ crc_form.c_mobile(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in crc_form.c_mobile.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ crc_form.c_mobile(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ crc_form.c_clg_name.label(class="form-control-label") }}
+                    {% if crc_form.c_clg_name.errors %}
+                        {{ crc_form.c_clg_name(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in crc_form.c_clg_name.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ crc_form.c_clg_name(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ crc_form.c_password.label(class="form-control-label") }}
+                    {% if crc_form.c_password.errors %}
+                        {{ crc_form.c_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in crc_form.c_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ crc_form.c_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ crc_form.c_confirm_password.label(class="form-control-label") }}
+                    {% if crc_form.c_confirm_password.errors %}
+                        {{ crc_form.c_confirm_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in crc_form.c_confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ crc_form.c_confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+          <div class="form-group">
+                {{ crc_form.c_submit(class="btn button", style="margin-inline: auto") }}
+          </div>
+    </form>
+</div>
+</div>
+{% endblock %}

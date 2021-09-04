@@ -1,0 +1,79 @@
+{% extends "new_base.html" %}
+<title>Home</title>
+
+{% block content %}
+<style>
+    /* Default height for small devices */
+    #intro-example {
+      height: 400px;
+    }
+
+    /* Height for devices larger than 992px */
+    @media (min-width: 992px) {
+      #intro-example {
+        height: 600px;
+      }
+    }
+  </style>
+
+ <!-- Background image -->
+  <div
+    id="intro-example"
+    class="p-5 text-center bg-image"
+    style="background-image: url('https://source.unsplash.com/1600x900/?study,books,laptop,computer');"
+  >
+    <div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+          <h1 class="mb-3">Welcome to the hub of ABESIT</h1>
+          <h5 class="mb-4">Here you can see all announcements, create your CV instantly!</h5>
+          <a
+            class="btn btn-outline-light btn-lg m-2"
+            href="{{ url_for('placed_student_gallery') }}"
+            role="button"
+            rel="nofollow"
+            target="_blank"
+            >Placed Students</a
+          >
+          <a
+            class="btn btn-outline-light btn-lg m-2"
+            href="{{ url_for('contact_us') }}"
+            target="_blank"
+            role="button"
+            >Contact Us</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="p-5 text-center bg-light">
+
+<div class="card text-center">
+  <div class="card-body">
+    <h5 class="card-title">Our Placements</h5>
+    <p class="card-text">Percentage of students placed in different sessions!!</p>
+  </div>
+</div>
+
+
+<div class="container" style="padding-bottom:40px;padding-top:40px">
+    <p>2019-20</p>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 75%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">75%</div>
+    </div>
+  </div>
+    <div class="container" style="padding-bottom:40px">
+    <p>2020-21</p>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 85%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">85%</div>
+    </div>
+  </div>
+    <div class="container" style="padding-bottom:40px">
+    <p>2021-22</p>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 95%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">95%</div>
+    </div>
+
+</div>
+
+{% endblock %}

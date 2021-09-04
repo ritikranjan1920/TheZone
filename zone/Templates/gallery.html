@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container container-form" style="margin-bottom:10rem">
+        <h1 style="text-align:center;margin:0.5rem">Placed Students</h1>
+        <!-- button to add newly placed students -->
+        {% if session['user'] == 'department' %}
+        <div style="display:flex">
+            <button class="btn btn-primary add-new-button" data-toggle="modal" data-target="#ModalAddCenter">
+                Add new student
+            </button>
+        </div>
+        {% endif %}
+        <hr>
+        {% if placed_students %}
+        <div class="gallery-container">
+            {% for student in placed_students %}
+            <div class="gallery-card">
+                <div data-toggle="modal" data-target="#{{ student.name }}">
+                    <img src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}" alt="Avatar" style="width:100%">
+                    <div>
+                        <H5 class="placement-name">{{student.name}}</H5>
+                        <h5 class="placement-package">{{student.package}}</h5>
+                    </div>
+                </div>
+                <div class="modal fade" id="{{ student.name }}" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLongTitle">Student Information</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                                <div>
+                                    <fieldset class="form-group">
+                                        <div class="update-img-col">
+                                            <img class="rounded-circle account-img" id="placed_pic" src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}">
+                                        </div>
+                                        <br>
+                                        <h3 class="t-des">Name         : {{ student.name }}</h3>
+                                        <h3 class="t-des">Branch       : {{ student.placed.branch }}</h3>
+                                        <h3 class="t-des">Package      : {{ student.package }}</h3>
+                                        <h3 class="t-des">Company_name : {{ student.company_name }}</h3>
+                                    </fieldset>
+                                    <br>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        {% if student.placed %}
+                                            <a type="button" class="btn btn-primary" href="{{ url_for('student_account', user_id=student.student_id) }}">Visit</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!--
+            {% for student in placed_students %}
+            <div class="gallery-card">
+                <a href="{{ url_for('student_account', user_id=student.user_id) }}" >
+                    <img src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}" alt="Avatar" style="width:100%">
+                    <div>
+                        <H5 class="placement-name">{{student.name}}</H5>
+                        <h5 class="placement-package">{{student.package}}</h5>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}-->
+            <!-- <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="gallery-card">
+                <a href="#">
+                    <img src="static/project.jpg" alt="Avatar" style="width:100%">
+                    <div>
+                        <h5 class="project-name">Ritik Ranjan</h5>
+                    </div>
+                </a>
+            </div> -->
+        </div>
+        {% else %}
+        <div style="text-align:center;margin-top:10rem;margin-bottom:10rem">
+            <h2>No Data Available</h2>
+        </div>
+        {% endif %}
+        <div class="modal fade" id="ModalAddCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add new student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div style="margin-left:20px, margin-right:20px">
+                      <form method="post" enctype="multipart/form-data">
+                          {{ form.hidden_tag() }}
+                            <fieldset class="form-group">
+                                <div class="update-img-col" >
+                                    <img class="rounded-circle account-img" id="placed_picture" src="static/default.jpg">
+                                    <br>
+                                    {{ form.picture(class="form-control-file", onchange='readURL(this);', style="display:none") }}
+                                    {% if form.picture.errors %}
+                                        {% for error in form.picture.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.name.label(class="form-control-label") }}
+                                    {% if form.name.errors %}
+                                        {{ form.name(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.name.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.name(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.roll_no.label(class="form-control-label") }}
+                                    {% if form.roll_no.errors %}
+                                        {{ form.roll_no(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.roll_no.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.roll_no(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.date_placed.label(class="form-control-label") }}
+                                    {% if form.date_placed.errors %}
+                                        {{ form.date_placed(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.date_placed.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.date_placed(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.package.label(class="form-control-label") }}
+                                    {% if form.package.errors %}
+                                        {{ form.package(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.package.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.package(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.company_name.label(class="form-control-label") }}
+                                    {% if form.company_name.errors %}
+                                        {{ form.company_name(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.company_name.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.company_name(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                            </fieldset>
+                          <br>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            {{ form.submit(class="btn btn-primary") }}
+                          </div>
+                      </form>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+

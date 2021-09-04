@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container container-form" style="margin-bottom:10rem">
+        {% if session['user'] == 'student' %}
+            <h1 style="text-align:center;margin:0.5rem">Your classmates</h1>
+        {% else %}
+            <h1 style="text-align:center;margin:0.5rem">Students</h1>
+        {% endif %}
+        <hr>
+        {% if classmates %}
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+        <div id="data" class="gallery-container">
+            {% for student in classmates %}
+            <div class="gallery-card">
+                <a href="/student_account/{{ student.user_id }}">
+                    <img src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}" alt="Avatar" style="width:100%">
+                    <div >
+                        <H5 class="placement-name">{{student.name}}</H5>
+                        <h5 class="placement-package">{{student.user_id}}</h5>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <h5 id="hidden" class="t-des" style="display:none;margin-top:10rem;margin-bottom:10rem;text-align:center">No student added of this branch and year</h5>
+        {% else %}
+            <h5 class="t-des" style="margin-top:10rem;margin-bottom:10rem;text-align:center">No student added of this branch and year</h5>
+        {% endif %}
+    </div>
+
+{% endblock content %}
+{% block script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='search.js')}}"></script>
+{% endblock script %}
+

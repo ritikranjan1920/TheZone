@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {{ project_update_form.hidden_tag() }}
+        <fieldset class="form-group row-display">
+            <div class="col-md-3">
+                {{ project_update_form.project_picture.label(class="form-control-label")}}
+                <div class="form-group" style="text-align:center;margin-bottom:3rem">
+                    <img class="project-img" id="project_image" src="{{  url_for('static', filename='project_images/' + project.project_image)  }}">
+                    {{ project_update_form.project_picture(class="form-control-file", onchange="readURL(this);",style="display:none") }}
+                    {% if project_update_form.project_picture.errors %}
+                        {% for error in project_update_form.project_picture.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ project_update_form.project_title.label(class="form-control-label") }}
+                    {% if project_update_form.project_title.errors %}
+                        {{ project_update_form.project_title(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in project_update_form.project_title.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ project_update_form.project_title(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group" >
+                    {{ project_update_form.date_finished.label(class="form-control-label") }}
+                    {% if project_update_form.date_finished.errors %}
+                        {{ project_update_form.date_finished(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in project_update_form.date_finished.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ project_update_form.date_finished(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ project_update_form.project_link.label(class="form-control-label") }}
+                    {% if project_update_form.project_link.errors %}
+                        {{ project_update_form.project_link(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in project_update_form.project_link.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ project_update_form.project_link(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col" >
+                <div class="form-group">
+                {{ project_update_form.description.label(class="form-control-label") }}
+                {% if project_update_form.description.errors %}
+                    {{ project_update_form.description(class="form-control form-control-lg is-invalid", style="height:30rem") }}
+                    <div class="invalid-feedback">
+                        {% for error in project_update_form.description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ project_update_form.description(class="form-control form-control-lg", style="height:44rem") }}
+                {% endif %}
+            </div>
+            </div>
+        </fieldset>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    {{ project_update_form.p_submit(class="btn btn-primary") }}
+  </div>
+</form>
+{% endblock content %}

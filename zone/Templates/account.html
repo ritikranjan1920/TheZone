@@ -1,0 +1,730 @@
+{% extends "base.html" %}
+{% block content %}
+    <main role="main" class="account-container" style="margin-bottom:5rem">
+        <div class="row">
+            <div class="col-md-8" style="margin:auto">
+                <div class="col">
+                    <div class="container-form">
+                        {% if edit_validated %}
+                        <div style="position:absolute;width:100%;text-align:end;margin-top:2%">
+                            <button class="modal-button" data-toggle="modal" data-target="#ModalCenter" >
+                                <i class="fa-lg fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="img-col">
+                                <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}">
+                            </div>
+                            <div class="info-col" style="align-text:center">
+                                <h3 class="t-name">{{ student.name }}</h3>
+                                <p class="t-des" >{{ student.branch }} - {{ student.year }}</p>
+                                <p class="t-des" >{{ student.user_id }}</p>
+                                <p class="t-des">Batch - 2022</p>
+                                <p class="t-des" >{{ student.headline }}</p>
+                            </div>
+                            {% if student.about %}
+                                <hr>
+                                <div class="about">
+                                    <h3 class="t-about">About me</h3>
+                                    <p class="t-des">
+                                        {{ student.about }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                      <div class="container-form">
+                          <div class="row-display">
+                              <h3 class="card-name" style="width:90%">Projects</h3>
+                              {% if edit_validated %}
+                                  <button class="modal-button" data-toggle="modal" data-target="#ProjectCenter" >
+<!--                                    <img class="plus" src="{{ url_for('static', filename='plus.png') }}">-->
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                              {% endif %}
+                          </div>
+                          <div class="project-container">
+                              {% if projects %}
+                                  {% for project in projects %}
+                                      <div class="project-card" data-toggle="modal" data-target="#{{ project.id }}">
+                                          <img src="{{ url_for('static', filename='project_images/' + project.project_image) }}" alt="Avatar" style="width:100%">
+                                          <div>
+                                            <h5 class="project-name">{{ project.title }}</h5>
+                                          </div>
+                                      </div>
+                                      <div class="modal fade" id="{{ project.id }}" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title">{{ project.title }}</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                    <div>
+                                                        <fieldset class="form-group">
+                                                            <br>
+                                                            <div class="update-img-col">
+                                                                <img src="{{ url_for('static', filename='project_images/'+project.project_image) }}">
+                                                            </div>
+                                                            <br>
+                                                            <label class="t-des">Description:</label>
+                                                            <p class="project-des">{{ project.description }}</p>
+                                                        </fieldset>
+                                                        <br>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            {% if edit_validated %}
+                                                                <a type="button" class="btn btn-danger" href="{{ url_for('project_delete', user_id=student.user_id,item_id=project.id) }}">Delete</a>
+                                                                <a type="button" class="btn btn-info" href="{{ url_for('edit', project_id=project.id) }}">Edit</a>
+                                                            {% endif %}
+                                                            {% if project.project_link %}
+                                                                <a type="button" class="btn btn-primary" href="{{ project.project_link }}">Visit</a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                      </div>
+                                  {% endfor %}
+                              {% else %}
+                                <p class="t-des"> No Project added. </p>
+                              {% endif %}
+                          </div>
+                      </div>
+                  </div>
+                <div class="col">
+                      <div class="container-form">
+                          <div class="row-display">
+                              <h3 class="card-name" style="width:90%">Education</h3>
+                              {% if edit_validated %}
+                                  <button class="modal-button" data-toggle="modal" data-target="#EducationCenter" >
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                              {% endif %}
+                          </div>
+                          {% if education %}
+                          <ul>
+                              <div class="certificate-container">
+                              {% for institute in education %}
+                                  <li>
+                                      <div class="row-display" >
+                                          <div class="certificate-img-container">
+                                              <img src="{{ url_for('static', filename='education.jpg') }}" class="certificate-img">
+                                          </div>
+                                          <div style="align-self:center">
+                                              <h3 class="t-name">{{ institute.organisation_name }}</h3>
+                                              <p class="c-des">{{ institute.degree }}</p>
+                                              <p class="c-des">{{ institute.field }}</p>
+                                              <p class="c-des">{{ institute.start_date }} - {{ institute.end_date }}</p>
+                                          </div>
+                                      </div>
+                                  </li>
+                              {% endfor %}
+                              </div>
+                          </ul>
+                          {% else %}
+                              <div class="project-container">
+                                  <p class="t-des"> No education added. </p>
+                              </div>
+                          {% endif %}
+                          <hr>
+                          <div class="row-display">
+                              <h3 class="card-name" style="width:90%">Certificates</h3>
+                              {% if edit_validated %}
+                                  <button class="modal-button" data-toggle="modal" data-target="#CertificateCenter" >
+<!--                                    <img class="plus" src="{{ url_for('static', filename='plus.png') }}">-->
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                              {% endif %}
+                          </div>
+                          <ul>
+                              {% if certificates %}
+                                  {% for certificate in certificates %}
+                                      <li>
+                                          <div class="row-display certificate-container">
+                                              <div class="certificate-img-container">
+                                                  <img src="{{ url_for('static', filename='certificate.jpg') }}" class="certificate-img">
+                                              </div>
+                                              <div style="align-self:center">
+                                                  <h3 class="t-name">{{ certificate.name }}</h3>
+                                                  <p class="c-des">{{ certificate.organisation_name}}</p>
+                                                  {% if certificate.date_expiry %}
+                                                    <p class="c-des">{{ certificate.date_issued}} - {{ certificate.date_expiry }} </p>
+                                                  {% else %}
+                                                    <p class="c-des">{{ certificate.date_issued}} .No expiration</p>
+                                                  {% endif %}
+                                                  <p class="c-des certificate-cred">{{ certificate.credential }}</p>
+                                                  {% if certificate.credential_url %}
+                                                  <a class="c-des" style="padding:0;padding-bottom:4px;color:cadetblue" href="{{ certificate.credential_url }}">See Credential</a>
+                                                  {% endif %}
+                                              </div>
+                                          </div>
+                                      </li>
+                                  {% endfor %}
+                              {% else %}
+                                  <div class="project-container">
+                                      <p class="t-des"> No certificate added. </p>
+                                  </div>
+                              {% endif %}
+                          </ul>
+                      </div>
+                  </div>
+                <div class="col">
+                    <div class="container-form">
+                        <div class="row-display">
+                            <h3 class="card-name" style="width:90%">Skills</h3>
+                            {% if edit_validated %}
+                                <button class="modal-button" data-toggle="modal" data-target="#SkillCenter" >
+<!--                                    <img class="plus" src="{{ url_for('static', filename='plus.png') }}">-->
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        {% if skills %}
+                        <div id="less_skills">
+                            {% for skill in skills[0:4] %}
+                                <p class="skills">{{ skill }}</p>
+                                <hr>
+                            {% endfor %}
+                        </div>
+                        <div id="more_skills" style="display:none">
+                            {% for skill in skills %}
+                                <p class="skills">{{ skill }}</p>
+                                <hr>
+                            {% endfor %}
+                        </div>
+                            <div class="show-more-container" id="showMore">
+                                <button class="btn show-more-button" onclick="showSkills();">Show more  &#11206;</button>
+                            </div>
+                            <div class="show-more-container" id="showLess" style="display:none">
+                                <button class="btn show-more-button" onclick="hideSkills();">Show Less  &#11205;</button>
+                            </div>
+                        {% else %}
+                            <div class="project-container">
+                                <p class="t-des"> No skill added. </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if student.user_id == current_user.user_id %}
+                    <a href="{{ url_for('resume', user_id=current_user.user_id) }}">
+                        <button class="btn btn-resume">Make My Resume</button>
+                    </a>
+                {% endif %}
+            </div>
+            {% if session["user"] != 'crc' %}
+                <div class="col-md-4">
+                <div class="container-form" style="margin-top:20px;text-align:center">
+                    {% if session['user'] == 'department' %}
+                        <h2 class="suggest-name">Other Students</h2>
+                    {% else %}
+                        <h2 class="suggest-name">Your classmates</h2>
+                    {% endif %}
+                    <hr>
+                    {% for student in classmates %}
+                    <a href="{{ url_for('student_account', user_id=student.user_id) }}" class="suggest-container row-display">
+                        <div class="suggest-img-container">
+                            <img class="rounded-circle suggest-img" src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}">
+                        </div>
+                        <div class="suggest-card">
+                            <h3 class="suggest-head">{{ student.name }}</h3>
+                            <p class="suggest-head">{{ student.headline }}</p>
+                        </div>
+                    </a>
+                    <hr>
+                    {% endfor %}
+                    <a type="button" class="btn btn-primary" href="{{url_for('students', year=student.year, branch=student.branch)}}">Show all</a>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% if edit_validated %}
+            <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLongTitle">Edit Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <div style="margin-left:20px, margin-right:20px">
+                          <form method="post" id="as_student" enctype="multipart/form-data">
+                                <div class="update-img-col" >
+                                    <img class="rounded-circle account-img" id="account_picture" src="{{  url_for('static', filename='profile_pics/' + student.image_file)  }}">
+                                    {{ form.s_picture(class="form-control-file", onchange="readURL(this);",style="display:none") }}
+                                    {% if form.s_picture.errors %}
+                                        {% for error in form.s_picture.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                {{ form.hidden_tag() }}
+                                    <fieldset class="form-group">
+                                        <div class="form-group" >
+                                            {{ form.s_name.label(class="form-control-label") }}
+                                            {% if form.s_name.errors %}
+                                                {{ form.s_name(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_name.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_name(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group" >
+                                            {{ form.s_year.label(class="form-control-label") }}
+                                            {% if form.s_year.errors %}
+                                                {{ form.s_year(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_year.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_year(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form.s_branch.label(class="form-control-label") }}
+                                            {% if form.s_branch.errors %}
+                                                {{ form.s_branch(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_branch.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_branch(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form.s_roll_no.label(class="form-control-label") }}
+                                            {% if form.s_roll_no.errors %}
+                                                {{ form.s_roll_no(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_roll_no.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_roll_no(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form.s_headline.label(class="form-control-label") }}
+                                            {% if form.s_headline.errors %}
+                                                {{ form.s_headline(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_headline.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_headline(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form.s_about.label(class="form-control-label") }}
+                                            {% if form.s_about.errors %}
+                                                {{ form.s_about(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.s_about.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.s_about(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                    </fieldset>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {{ form.s_submit(class="btn btn-primary") }}
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="ProjectCenter" tabindex="-1"  role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document" >
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">ADD PROJECT</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body" >
+                          <form method="post" enctype="multipart/form-data">
+                                {{ project_form.hidden_tag() }}
+                                    <fieldset class="form-group row-display">
+                                        <div class="col-md-5">
+                                            <div class="form-group" style="margin-bottom:3rem">
+                                                {{ project_form.project_picture.label(class="form-control-label")}}
+                                                <img class="project-img" id="project_image" src="{{  url_for('static', filename='project_default.jpg')  }}">
+                                                {{ project_form.project_picture(class="form-control-file", onchange="readURL(this);",style="display:none") }}
+                                                {% if project_form.project_picture.errors %}
+                                                    {% for error in project_form.project_picture.errors %}
+                                                        <span class="text-danger">{{ error }}</span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group" >
+                                                {{ project_form.project_title.label(class="form-control-label") }}
+                                                {% if project_form.project_title.errors %}
+                                                    {{ project_form.project_title(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in project_form.project_title.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ project_form.project_title(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group" >
+                                                {{ project_form.date_finished.label(class="form-control-label") }}
+                                                {% if project_form.date_finished.errors %}
+                                                    {{ project_form.date_finished(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in project_form.date_finished.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ project_form.date_finished(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ project_form.project_link.label(class="form-control-label") }}
+                                                {% if project_form.project_link.errors %}
+                                                    {{ project_form.project_link(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in project_form.project_link.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ project_form.project_link(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col" >
+                                            <div class="form-group">
+                                            {{ project_form.description.label(class="form-control-label") }}
+                                            {% if project_form.description.errors %}
+                                                {{ project_form.description(class="form-control form-control-lg is-invalid", style="width:20rem,height:30rem") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in project_form.description.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ project_form.description(class="form-control form-control-lg", style="height:30rem") }}
+                                            {% endif %}
+                                        </div>
+                                        </div>
+                                    </fieldset>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {{ project_form.p_submit(class="btn btn-primary") }}
+                              </div>
+                          </form>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="EducationCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Education</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {{ education_form.hidden_tag() }}
+                                    <fieldset class="form-group ">
+                                        <div class="form-group" >
+                                            {{ education_form.name.label(class="form-control-label") }}
+                                            {% if education_form.name.errors %}
+                                                {{ education_form.name(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in education_form.name.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ education_form.name(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group" >
+                                            {{ education_form.degree.label(class="form-control-label") }}
+                                            {% if education_form.degree.errors %}
+                                                {{ education_form.degree(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in education_form.degree.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ education_form.degree(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ education_form.field.label(class="form-control-label") }}
+                                            {% if education_form.field.errors %}
+                                                {{ education_form.field(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in education_form.field.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ education_form.field(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="row-display" style="column-gap:10px">
+                                            <div class="form-group">
+                                                {{ education_form.start_year.label(class="form-control-label") }}
+                                                {% if education_form.start_year.errors %}
+                                                    {{ education_form.start_year(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in education_form.start_year.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ education_form.start_year(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ education_form.end_year.label(class="form-control-label") }}
+                                                {% if education_form.end_year.errors %}
+                                                    {{ education_form.end_year(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in education_form.end_year.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ education_form.end_year(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                              <div class="modal-footer" style="margin-top:1rem">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                {{ education_form.submit(class="btn btn-primary") }}
+                              </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="CertificateCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">ADD Certificate</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {{ certificate_form.hidden_tag() }}
+                                    <fieldset class="form-group ">
+                                        <div class="form-group" >
+                                            {{ certificate_form.name.label(class="form-control-label") }}
+                                            {% if certificate_form.name.errors %}
+                                                {{ certificate_form.name(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in certificate_form.name.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ certificate_form.name(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group" >
+                                            {{ certificate_form.organisation.label(class="form-control-label") }}
+                                            {% if certificate_form.organisation.errors %}
+                                                {{ certificate_form.organisation(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in certificate_form.organisation.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ certificate_form.organisation(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ certificate_form.credential.label(class="form-control-label") }}
+                                            {% if certificate_form.credential.errors %}
+                                                {{ certificate_form.credential(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in certificate_form.credential.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ certificate_form.credential(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ certificate_form.credential_url.label(class="form-control-label") }}
+                                            {% if certificate_form.credential_url.errors %}
+                                                {{ certificate_form.credential_url(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in certificate_form.credential_url.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ certificate_form.credential_url(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                        {{ certificate_form.issue_month.label(class="form-control-label") }}
+                                        <div class="row-display" style="column-gap:10px">
+                                            <div class="form-group">
+                                                {% if certificate_form.issue_month.errors %}
+                                                    {{ certificate_form.issue_month(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in certificate_form.issue_month.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ certificate_form.issue_month(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                {% if certificate_form.issue_year.errors %}
+                                                    {{ certificate_form.issue_year(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in certificate_form.issue_year.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ certificate_form.issue_year(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {{ certificate_form.expiration_month.label(class="form-control-label") }}
+                                        <div class="row-display" style="column-gap:10px">
+                                            <div class="form-group">
+                                                {% if certificate_form.expiration_month.errors %}
+                                                    {{ certificate_form.expiration_month(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in certificate_form.expiration_month.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ certificate_form.expiration_month(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="form-group">
+                                                {% if certificate_form.expiration_year.errors %}
+                                                    {{ certificate_form.expiration_year(class="form-control form-control-lg is-invalid") }}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in certificate_form.expiration_year.errors %}
+                                                            <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    {{ certificate_form.expiration_year(class="form-control form-control-lg") }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="modal-footer" style="margin-top:1rem">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        {{ certificate_form.c_submit(class="btn btn-primary") }}
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="SkillCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">ADD skill</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body modal-skills-body">
+                            <form method="post">
+                                {{ certificate_form.hidden_tag() }}
+                                <div class="form-group ">
+                                    {{ skill_form.name.label(class="form-control-label")}}
+                                    <div class="row-display">
+                                        <div class="form-group" style="width:85%">
+                                            {{ skill_form.name(class="form-control form-control-lg") }}
+                                        </div>
+                                        <div class="form-group" style="text-align:center;margin-top:auto;margin-bottom:auto; width:15%">
+                                            {{ skill_form.sk_submit(class="btn btn-primary") }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <br>
+                            {% if skills %}
+                                <h5>Remove Skills</h5>
+                                <hr>
+                                <form method="post">
+                                    <div class="form-group" >
+                                        {% for skill in skills %}
+                                            <input type="checkbox" name="remove_skills" id="{{ skill }}" value="{{ skill }}">
+                                            <label class="t-des">{{ skill }}</label>
+                                            <hr>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer" style="margin-top:1rem">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        {{ skill_form.sk_remove(class="btn btn-primary") }}
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+{% endblock content %}
+{% block script %}
+    {% if not validated %}
+        <script  src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $(window).on('load', function() {
+                $('#ModalCenter').modal('show');
+            });
+        </script>
+    {% endif %}
+{% endblock script %}
+

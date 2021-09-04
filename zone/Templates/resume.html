@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-7 resume container-form">
+    <div class="row-display font" id="resume"  style="height:1048px">
+        <div class="col-md-4 left-side" >
+            <img class="resume-img" src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}">
+            <br>
+            <h3>Personal Details</h3>
+            <div class="artificial-hr"></div>
+            <label>Name</label>
+            <h6>{{student.name}}</h6>
+            <br>
+            <label>Phone No.</label>
+            <h6>{{student.mobile}}</h6>
+            <br>
+            <label>Email</label>
+            <h6>{{student.email}}</h6>
+            <br>
+        </div>
+        <div class="col-md-8 right-side">
+            <br>
+            {% if student.about %}
+                <p class="about">
+                    {{ student.about }}
+                </p>
+            {% endif %}
+            {% if education %}
+                <h5>Education</h5>
+                <hr style="background-color:#1C2833">
+                {% for institute in education %}
+                <label>{{ institute.start_date }} - {{ institute.end_date }}&nbsp;&nbsp;&nbsp;&nbsp;{{ institute.organisation_name }}</label><br>
+                {% endfor %}
+            {% endif %}
+            <br>
+            {% if student.projects %}
+                <h5>Projects</h5>
+                <hr style="background-color:#1C2833">
+                {% for project in student.projects[:3] %}
+                    <b><label style="margin-top:0.3rem;">&#x25cf;&nbsp;{{project.title}}</label></b>
+                    {% if project.description %}
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ project.description }}</p>
+                    {% endif %}
+
+                {% endfor %}
+            {% endif %}
+            <br>
+            {% if certificates %}
+                <h5>Certificates</h5>
+                <hr style="background-color:#1C2833">
+                {% for certificate in certificates %}
+                    {% if certificate.date_expiry %}
+                        <label>{{ certificate.date_issued}} - {{ certificate.date_expiry }}&nbsp;&nbsp;&nbsp;&nbsp;{{ certificate.name }}</label><br>
+                    {% else %}
+                        <label>{{ certificate.date_issued}} - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ certificate.name }}</label><br>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <br>
+            {% if skills %}
+                <h5>Skills</h5>
+                <hr style="background-color:#1C2833">
+                {% for skill in skills %}
+                    <label class="resume-skill">{{ skill }}</label>
+                {% endfor %}
+                <hr style="background-color:#1C2833">
+            {% endif %}
+        </div>
+    </div>
+    </div>
+<button class="btn btn-resume-print btn-primary" id="download">Print</button>
+{% endblock content %}
+{% block script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='resume.js')}}"></script>
+{% endblock script %}
