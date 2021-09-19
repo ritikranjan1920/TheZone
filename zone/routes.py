@@ -4,8 +4,8 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, session, make_response
 from zone.forms import StudentRegistrationForm, StudentLoginForm, DepartmentLoginForm, DepartmentRegistrationForm, CRCLoginForm, \
     CRCRegistrationForm, StudentUpdateForm, PlacedStudentForm, \
-    ProjectForm, EducationForm, CertificateForm, SkillForm, AnnouncementForm
-from zone.models import Student, PlacedStudent, Project, Faculty, Announcement, CRCAnnouncement, CRC, Education, Certificates
+    ProjectForm, EducationForm, CertificateForm, SkillForm, AnnouncementForm, ResultForm
+from zone.models import Student, PlacedStudent, Project, Faculty, Announcement, CRCAnnouncement, CRC, Education, Certificates, Result
 from zone import app, bcrypt, db
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -166,6 +166,19 @@ def save_project_picture(form_picture):
     return picture_fn
 
 
+def save_pdf(pdf, name, t):
+    _, f_ext = os.path.splitext(pdf.filename)
+    fn = name + f_ext
+    if t == 'letter':
+        path = os.path.join(app.root_path, 'static/offer_letters', fn)
+    else:
+        path = os.path.join(app.root_path, 'static/noc', fn)
+
+    pdf.save(path)
+
+    return fn
+
+
 @app.route("/student_account/<string:user_id>", methods=['GET', 'POST'])
 @login_required
 def student_account(user_id):
@@ -174,6 +187,7 @@ def student_account(user_id):
     projects = Project.query.filter_by(student_id=student.user_id).all()[:6]
     certificates = Certificates.query.filter_by(student_id=student.user_id).all()
     education = Education.query.filter_by(student_id=student.user_id).all()
+    result = Result.query.filter_by(student_id=student.user_id).all()
     if student.skills is not None:
         skills = student.skills.split(',')
     else:
@@ -184,6 +198,8 @@ def student_account(user_id):
         education_form = EducationForm()
         certificate_form = CertificateForm()
         skill_form = SkillForm()
+        ResultForm().semesters(student.user_id)
+        result_form = ResultForm()
         form_validated = True
         if form.s_submit.data:
             form_validated = form.validate_on_submit()
@@ -191,12 +207,17 @@ def student_account(user_id):
                 if form.s_picture.data:
                     picture_file = save_picture(form.s_picture.data)
                     student.image_file = picture_file
+                if form.letter.data:
+                    file = save_pdf(form.letter.data, student.name, 'letter')
+                    student.letter = file
                 student.year = form.s_year.data
                 student.name = form.s_name.data
                 student.branch = form.s_branch.data
                 student.about = form.s_about.data
                 student.headline = form.s_headline.data
                 student.user_id = form.s_roll_no.data
+                if form.placement.data != '0':
+                    student.placement_info = form.placement.data
                 db.session.commit()
                 flash('Your account has been updated!', 'success')
                 return redirect(url_for('student_account', user_id=student.user_id))
@@ -271,6 +292,14 @@ def student_account(user_id):
             db.session.commit()
             flash('Your skills has been updated!', 'success')
             return redirect(url_for('student_account', user_id=student.user_id))
+        elif result_form.add.data:
+            if result_form.validate_on_submit():
+                res = Result(sem=result_form.sem.data, nob=result_form.nob.data, percent=result_form.percent.data,
+                             student_id=student.user_id)
+                db.session.add(res)
+                db.session.commit()
+                flash('Your result has been updated!', 'success')
+                return redirect(url_for('student_account', user_id=student.user_id))
         elif request.method == 'GET':
             form.s_year.data = student.year
             form.s_name.data = student.name
@@ -281,11 +310,11 @@ def student_account(user_id):
         return render_template('account.html', form=form, project_form=project_form, certificate_form=certificate_form,
                                student=student, projects=projects, education=education, skill_form=skill_form,
                                certificates=certificates, skills=skills, validated=form_validated, education_form=education_form,
-                               classmates=student_classmates,
+                               classmates=student_classmates, result_form=result_form, results=result,
                                edit_validated=True)
     else:
         return render_template('account.html', student=student, projects=projects, education=education,
-                               certificates=certificates, skills=skills, classmates=student_classmates,
+                               certificates=certificates, skills=skills, classmates=student_classmates, results=result,
                                edit_validated=False)
 
 
@@ -341,8 +370,12 @@ def placed_student_gallery():
         else:
             picture_file = None
             print(form.picture.data)
+        if form.noc.data:
+            file = save_pdf(form.noc.data, form.roll_no.data, 'noc')
+        else:
+            file = None
         student = PlacedStudent(student_id=form.roll_no.data, image_file=picture_file, package=form.package.data, company_name=form.company_name.data,
-                                date_placed=form.date_placed.data, name=form.name.data)
+                                date_placed=form.date_placed.data, name=form.name.data, noc=file)
         db.session.add(student)
         db.session.commit()
         flash('Student Added', 'success')
@@ -419,6 +452,32 @@ def project_delete(user_id, item_id):
     db.session.commit()
     flash('Project deleted successfully!', 'success')
     return redirect(url_for('student_account', user_id=user_id))
+
+
+@app.route("/result/delete/<int:user_id>/<int:sem>")
+@login_required
+def result_delete(user_id, sem):
+    if str(user_id) == str(current_user.user_id):
+        result = Result.query.filter_by(student_id=user_id).filter_by(sem=sem).first()
+        db.session.delete(result)
+        db.session.commit()
+        flash('Result has been updated successfully!', 'success')
+        return redirect(url_for('student_account', user_id=user_id))
+    else:
+        return redirect(url_for("home"))
+
+
+@app.route("/student/delete/<int:user_id>")
+@login_required
+def student_delete(user_id):
+    if session['user'] == 'crc' or session['user'] == 'department' or True:
+        student = PlacedStudent.query.filter_by(student_id=user_id).first()
+        db.session.delete(student)
+        db.session.commit()
+        flash('Student has been deleted successfully!', 'success')
+        return redirect(url_for('placed_student_gallery'))
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route("/<string:user_id>/resume")

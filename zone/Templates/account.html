@@ -33,6 +33,52 @@
                                 </div>
                             {% endif %}
                         </div>
+                        <hr>
+                        <div style="margin:2rem">
+                            <div class="row">
+                                <div class="col-md placement-info">
+                                    <h5><label>Placement Info</label></h5>
+                                </div>
+                                {% if student.placement %}
+                                    <div class="col-md placement-info">
+                                        <h5><label>NOC</label></h5>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md placement-info">
+                                    <h5><label>Offer Letter</label></h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md placement-info">
+                                    <label>{{ student.placement_info }}</label>
+                                </div>
+                                {% if student.placement %}
+                                    <div class="col-md placement-info">
+                                        {% if student.placement.noc %}
+                                            {% if edit_validated or session['user']=='crc' or session['user'] == 'department' %}
+                                                <a target="_blank" href="/static/noc/{{ student.placement.noc }}" class="btn btn-primary" >Download</a>
+                                            {% else %}
+                                                <label>Provided</label>
+                                            {% endif %}
+                                        {% else %}
+                                        <label>Not Provided</label>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                <div class="col-md placement-info">
+                                    {% if student.letter %}
+                                        {% if edit_validated or session['user']=='crc' or session['user'] == 'department' %}
+                                            <a target="_blank" href="/static/offer_letters/{{ student.letter }}" class="btn btn-primary" >Download</a>
+                                        {% else %}
+                                            <label>Uploaded</label>
+                                        {% endif %}
+                                    {% else %}
+                                        <label>Not Uploaded</label>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col">
@@ -178,6 +224,42 @@
                 <div class="col">
                     <div class="container-form">
                         <div class="row-display">
+                            <h3 class="card-name" style="width:90%">Semester Result</h3>
+                            {% if edit_validated %}
+                                <button class="modal-button" data-toggle="modal" data-target="#ResultCenter" >
+                                    <i class="btn fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        {% if results %}
+                        <div style="padding:3%;text-align:center">
+                            <table style="width:100%;">
+                                <tr>
+                                    <th>Semester</th>
+                                    <th>Percentage</th>
+                                    <th>No of Backlogs</th>
+                                    <th></th>
+                                </tr>
+                                {% for result in results %}
+                                    <tr>
+                                        <td>{{ result.sem }}</td>
+                                        <td>{{ result.percent }}</td>
+                                        <td>{{ result.nob }}</td>
+                                        <td><a style="color:red" href="{{ url_for('result_delete', user_id=student.user_id, sem=result.sem ) }}">Delete</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="project-container">
+                            <p class="t-des"> No Result Added. </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="container-form">
+                        <div class="row-display">
                             <h3 class="card-name" style="width:90%">Skills</h3>
                             {% if edit_validated %}
                                 <button class="modal-button" data-toggle="modal" data-target="#SkillCenter" >
@@ -212,8 +294,8 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if student.user_id == current_user.user_id %}
-                    <a href="{{ url_for('resume', user_id=current_user.user_id) }}">
+                {% if edit_validated or session['user']=='crc' or session['user'] == 'department' %}
+                    <a href="{{ url_for('resume', user_id=student.user_id) }}">
                         <button class="btn btn-resume">Make My Resume</button>
                     </a>
                 {% endif %}
@@ -248,7 +330,7 @@
         </div>
         {% if edit_validated %}
             <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="ModalLongTitle">Edit Information</h5>
@@ -259,96 +341,123 @@
                   <div class="modal-body">
                       <div style="margin-left:20px, margin-right:20px">
                           <form method="post" id="as_student" enctype="multipart/form-data">
-                                <div class="update-img-col" >
-                                    <img class="rounded-circle account-img" id="account_picture" src="{{  url_for('static', filename='profile_pics/' + student.image_file)  }}">
-                                    {{ form.s_picture(class="form-control-file", onchange="readURL(this);",style="display:none") }}
-                                    {% if form.s_picture.errors %}
-                                        {% for error in form.s_picture.errors %}
-                                            <span class="text-danger">{{ error }}</span>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
-                                {{ form.hidden_tag() }}
-                                    <fieldset class="form-group">
-                                        <div class="form-group" >
-                                            {{ form.s_name.label(class="form-control-label") }}
-                                            {% if form.s_name.errors %}
-                                                {{ form.s_name(class="form-control form-control-lg is-invalid") }}
-                                                <div class="invalid-feedback">
-                                                    {% for error in form.s_name.errors %}
-                                                        <span>{{ error }}</span>
-                                                    {% endfor %}
-                                                </div>
-                                            {% else %}
-                                                {{ form.s_name(class="form-control form-control-lg") }}
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="update-img-col" >
+                                            <img class="rounded-circle account-img" id="account_picture" src="{{  url_for('static', filename='profile_pics/' + student.image_file)  }}">
+                                            {{ form.s_picture(class="form-control-file", onchange="readURL(this);",style="display:none") }}
+                                            {% if form.s_picture.errors %}
+                                                {% for error in form.s_picture.errors %}
+                                                    <span class="text-danger">{{ error }}</span>
+                                                {% endfor %}
                                             {% endif %}
                                         </div>
-                                        <div class="form-group" >
-                                            {{ form.s_year.label(class="form-control-label") }}
-                                            {% if form.s_year.errors %}
-                                                {{ form.s_year(class="form-control form-control-lg is-invalid") }}
-                                                <div class="invalid-feedback">
-                                                    {% for error in form.s_year.errors %}
-                                                        <span>{{ error }}</span>
-                                                    {% endfor %}
+                                        {{ form.hidden_tag() }}
+                                            <fieldset class="form-group">
+
+                                                <div class="form-group" >
+                                                    {{ form.s_name.label(class="form-control-label") }}
+                                                    {% if form.s_name.errors %}
+                                                        {{ form.s_name(class="form-control form-control-lg is-invalid") }}
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.s_name.errors %}
+                                                                <span>{{ error }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form.s_name(class="form-control form-control-lg") }}
+                                                    {% endif %}
                                                 </div>
-                                            {% else %}
-                                                {{ form.s_year(class="form-control form-control-lg") }}
-                                            {% endif %}
-                                        </div>
-                                        <div class="form-group">
-                                            {{ form.s_branch.label(class="form-control-label") }}
-                                            {% if form.s_branch.errors %}
-                                                {{ form.s_branch(class="form-control form-control-lg is-invalid") }}
-                                                <div class="invalid-feedback">
-                                                    {% for error in form.s_branch.errors %}
-                                                        <span>{{ error }}</span>
-                                                    {% endfor %}
+                                                <div class="form-group" >
+                                                    {{ form.s_year.label(class="form-control-label") }}
+                                                    {% if form.s_year.errors %}
+                                                        {{ form.s_year(class="form-control form-control-lg is-invalid") }}
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.s_year.errors %}
+                                                                <span>{{ error }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form.s_year(class="form-control form-control-lg") }}
+                                                    {% endif %}
                                                 </div>
-                                            {% else %}
-                                                {{ form.s_branch(class="form-control form-control-lg") }}
-                                            {% endif %}
-                                        </div>
-                                        <div class="form-group">
-                                            {{ form.s_roll_no.label(class="form-control-label") }}
-                                            {% if form.s_roll_no.errors %}
-                                                {{ form.s_roll_no(class="form-control form-control-lg is-invalid") }}
-                                                <div class="invalid-feedback">
-                                                    {% for error in form.s_roll_no.errors %}
-                                                        <span>{{ error }}</span>
-                                                    {% endfor %}
+                                                <div class="form-group">
+                                                    {{ form.s_branch.label(class="form-control-label") }}
+                                                    {% if form.s_branch.errors %}
+                                                        {{ form.s_branch(class="form-control form-control-lg is-invalid") }}
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.s_branch.errors %}
+                                                                <span>{{ error }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form.s_branch(class="form-control form-control-lg") }}
+                                                    {% endif %}
                                                 </div>
-                                            {% else %}
-                                                {{ form.s_roll_no(class="form-control form-control-lg") }}
-                                            {% endif %}
-                                        </div>
-                                        <div class="form-group">
-                                            {{ form.s_headline.label(class="form-control-label") }}
-                                            {% if form.s_headline.errors %}
-                                                {{ form.s_headline(class="form-control form-control-lg is-invalid") }}
-                                                <div class="invalid-feedback">
-                                                    {% for error in form.s_headline.errors %}
-                                                        <span>{{ error }}</span>
-                                                    {% endfor %}
+                                                <div class="form-group">
+                                                    {{ form.s_roll_no.label(class="form-control-label") }}
+                                                    {% if form.s_roll_no.errors %}
+                                                        {{ form.s_roll_no(class="form-control form-control-lg is-invalid") }}
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.s_roll_no.errors %}
+                                                                <span>{{ error }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form.s_roll_no(class="form-control form-control-lg") }}
+                                                    {% endif %}
                                                 </div>
-                                            {% else %}
-                                                {{ form.s_headline(class="form-control form-control-lg") }}
-                                            {% endif %}
-                                        </div>
+                                                <div class="form-group">
+                                                    {{ form.s_headline.label(class="form-control-label") }}
+                                                    {% if form.s_headline.errors %}
+                                                        {{ form.s_headline(class="form-control form-control-lg is-invalid") }}
+                                                        <div class="invalid-feedback">
+                                                            {% for error in form.s_headline.errors %}
+                                                                <span>{{ error }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        {{ form.s_headline(class="form-control form-control-lg") }}
+                                                    {% endif %}
+                                                </div>
+                                            </fieldset>
+                                    </div>
+                                    <div class="col">
                                         <div class="form-group">
                                             {{ form.s_about.label(class="form-control-label") }}
                                             {% if form.s_about.errors %}
-                                                {{ form.s_about(class="form-control form-control-lg is-invalid") }}
+                                                {{ form.s_about(class="form-control form-control-lg is-invalid", style="height:23rem") }}
                                                 <div class="invalid-feedback">
                                                     {% for error in form.s_about.errors %}
                                                         <span>{{ error }}</span>
                                                     {% endfor %}
                                                 </div>
                                             {% else %}
-                                                {{ form.s_about(class="form-control form-control-lg") }}
+                                                {{ form.s_about(class="form-control form-control-lg", style="height:23rem") }}
                                             {% endif %}
                                         </div>
-                                    </fieldset>
+                                        <div class="form-group">
+                                            {{ form.placement.label(class="form-control-label") }}
+                                            {{ form.placement(class="form-control form-control-lg") }}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form.letter.label(class="form-control-label") }}
+                                            {% if form.letter.errors %}
+                                                {{ form.letter(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.letter.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ form.letter(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 {{ form.s_submit(class="btn btn-primary") }}
@@ -709,6 +818,63 @@
                                     </div>
                                 </form>
                             {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="ResultCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">ADD Result</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body modal-skills-body">
+                            <form method="post">
+                                {{ result_form.hidden_tag() }}
+                                <div class="col-md-4 form-group " style="margin:auto;margin-bottom:1rem">
+                                    {{ result_form.sem.label(class="form-control-label")}}
+                                    {{ result_form.sem(class="form-control form-control-lg") }}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class=" form-group">
+                                            {{ result_form.percent.label(class="form-control-label") }}
+                                            {% if result_form.percent.errors %}
+                                                {{ result_form.percent(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in result_form.percent.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ result_form.percent(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-group">
+                                            {{ result_form.nob.label(class="form-control-label") }}
+                                            {% if result_form.nob.errors %}
+                                                {{ result_form.nob(class="form-control form-control-lg is-invalid") }}
+                                                <div class="invalid-feedback">
+                                                    {% for error in result_form.nob.errors %}
+                                                        <span>{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                {{ result_form.nob(class="form-control form-control-lg") }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="margin-top:1rem">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    {{ result_form.add(class="btn btn-primary") }}
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -18,7 +18,7 @@ def load_user(user_id):
 
 class Student(db.Model, UserMixin):
     user_id = db.Column(db.String(12), primary_key=True, unique=True, nullable=False)
-    name = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     year = db.Column(db.String(1), nullable=False)
     branch = db.Column(db.String(30), nullable=False)
@@ -29,6 +29,8 @@ class Student(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='profile_default.jpg')
     skills = db.Column(db.String(500))
     password = db.Column(db.String(60), nullable=False)
+    placement_info = db.Column(db.String(20), nullable=False, default="Not Interested")
+    letter = db.Column(db.String(20))
     projects = db.relationship('Project', backref='creator', lazy=True)
     placement = db.relationship('PlacedStudent', backref='placed')
 
@@ -95,10 +97,11 @@ class PlacedStudent(db.Model):
     date_placed = db.Column(db.Date, nullable=False, default=date)
     package = db.Column(db.String(7), nullable=False)
     company_name = db.Column(db.String(30), nullable=False)
+    noc = db.Column(db.String(20))
     student_id = db.Column(db.Integer, db.ForeignKey('student.user_id'), nullable=False)
 
     def __repr__(self):
-        return f"PlacedStudent('{self.name}', '{self.date_placed}', '{self.company_name}', {self.package})"
+        return f"PlacedStudent('{self.name}', '{self.date_placed}', '{self.company_name}', {self.package}, {self.noc})"
 
 
 class Announcement(db.Model):
@@ -148,3 +151,12 @@ class Education(db.Model, UserMixin):
     def __repr__(self):
         return f"Faculty('{self.name}', '{self.email}', '{self.user_id}', '{self.clg_name}'," \
                f" '{self.mobile}', '{self.image_file}')"
+
+
+class Result(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    sem = db.Column(db.String(2), nullable=False)
+    nob = db.Column(db.String(2), nullable=False)
+    percent = db.Column(db.String(6), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.user_id'), nullable=False)
+

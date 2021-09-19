@@ -3,7 +3,7 @@
     <div class="container container-form" style="margin-bottom:10rem">
         <h1 style="text-align:center;margin:0.5rem">Placed Students</h1>
         <!-- button to add newly placed students -->
-        {% if session['user'] == 'department' %}
+        {% if session['user'] != 'student' %}
         <div style="display:flex">
             <button class="btn btn-primary add-new-button" data-toggle="modal" data-target="#ModalAddCenter">
                 Add new student
@@ -48,6 +48,9 @@
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         {% if student.placed %}
                                             <a type="button" class="btn btn-primary" href="{{ url_for('student_account', user_id=student.student_id) }}">Visit</a>
+                                        {% endif %}
+                                        {% if session['user'] != 'student' %}
+                                            <a href="{{ url_for('student_delete', user_id=student.student_id) }}" class="btn btn-danger">Delete</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -402,7 +405,7 @@
                           {{ form.hidden_tag() }}
                             <fieldset class="form-group">
                                 <div class="update-img-col" >
-                                    <img class="rounded-circle account-img" id="placed_picture" src="static/default.jpg">
+                                    <img class="rounded-circle add-placed-img" id="placed_picture" src="static/default.jpg">
                                     <br>
                                     {{ form.picture(class="form-control-file", onchange='readURL(this);', style="display:none") }}
                                     {% if form.picture.errors %}
@@ -474,6 +477,19 @@
                                         </div>
                                     {% else %}
                                         {{ form.company_name(class="form-control form-control-lg") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group" >
+                                    {{ form.noc.label(class="form-control-label") }}
+                                    {% if form.noc.errors %}
+                                        {{ form.noc(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.noc.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.noc(class="form-control form-control-lg") }}
                                     {% endif %}
                                 </div>
                             </fieldset>
