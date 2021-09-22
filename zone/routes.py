@@ -1,4 +1,4 @@
-import os
+import os, datetime
 import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, session, make_response
@@ -8,22 +8,6 @@ from zone.forms import StudentRegistrationForm, StudentLoginForm, DepartmentLogi
 from zone.models import Student, PlacedStudent, Project, Faculty, Announcement, CRCAnnouncement, CRC, Education, Certificates, Result
 from zone import app, bcrypt, db
 from flask_login import login_user, current_user, logout_user, login_required
-
-current_student = {
-    'name': 'Ritik Ranjan',
-    'email': 'ritikranjan1920@gmail.com',
-    'user_id': '1929010125',
-    'year': '3',
-    'branch': 'CSE',
-    'clg_name': 'ABESIT',
-    'mobile': '9999457134',
-    'batch': '2022',
-    'headline': 'Machine Learning Enthusiast',
-    'about_me': '''Hello, my name is Ritik Ranjan and I am a machine learning enthusiast. I am not only enthusiast for 
-                    learning machine learning but also about the technology which are related to deep learning and 
-                    artificial intelligence.'''
-
-}
 
 
 def which_user(user_id):
@@ -35,10 +19,47 @@ def which_user(user_id):
         return 'crc'
 
 
+def check(n):
+    if n < 10:
+        n = str(n)
+        n = '0' + n
+    n = str(n)
+    return n
+
+
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('new_home.html')
+    info_data = db.session.query(Student.placement_info, db.func.count(Student.placement_info)).group_by(Student.placement_info).all()
+    d = datetime.date.today().day
+    y = datetime.date.today().year
+    m = datetime.date.today().month
+    num_data = []
+    for i in range(2, d+1, 2):
+        s = db.session.query(db.func.count(PlacedStudent.date_placed)).filter((PlacedStudent.date_placed <= str(y)+'-'+check(m)+'-'+check(i))).all()[0][0]
+        num_data.append((check(i), s))
+    packages = db.session.query(PlacedStudent.package).all()
+    pack = [0, 0, 0, 0, 0]
+    for package in packages:
+        p = package[0].upper().split('L')[0]
+        p = int(p)
+        if p < 3:
+            pack[0] = pack[0] + 1
+        elif p < 5:
+            pack[1] = pack[1] + 1
+        elif p < 7:
+            pack[2] = pack[2] + 1
+        elif p < 10:
+            pack[3] = pack[3] + 1
+        else:
+            pack[4] = pack[4] + 1
+    print(pack)
+    return render_template('new_home.html', info_data=info_data, num_data=num_data, pack=pack)
+
+
+@app.route("/demo")
+def demo():
+    return render_template('demo.html')
 
 
 @app.route("/login", methods=['GET', 'POST'])

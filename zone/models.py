@@ -29,7 +29,7 @@ class Student(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='profile_default.jpg')
     skills = db.Column(db.String(500))
     password = db.Column(db.String(60), nullable=False)
-    placement_info = db.Column(db.String(20), nullable=False, default="Not Interested")
+    placement_info = db.Column(db.String(20), nullable=False, default="Not Placed")
     letter = db.Column(db.String(20))
     projects = db.relationship('Project', backref='creator', lazy=True)
     placement = db.relationship('PlacedStudent', backref='placed')

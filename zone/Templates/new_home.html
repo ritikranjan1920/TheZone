@@ -45,34 +45,166 @@
       </div>
     </div>
   </div>
-<div class="p-5 text-center bg-light">
 
-<div class="card text-center">
+
+
+
+
+<!--<div class="p-5 text-center bg-light">-->
+
+<!--<div class="card text-center">-->
+<!--  <div class="card-body">-->
+<!--    <h5 class="card-title">Our Placements</h5>-->
+<!--    <p class="card-text">Percentage of students placed in different sessions!!</p>-->
+<!--  </div>-->
+<!--</div>-->
+
+
+<!--<div class="container" style="padding-bottom:40px;padding-top:40px">-->
+<!--    <p>2019-20</p>-->
+<!--    <div class="progress">-->
+<!--        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 75%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">75%</div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--    <div class="container" style="padding-bottom:40px">-->
+<!--    <p>2020-21</p>-->
+<!--    <div class="progress">-->
+<!--        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 85%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">85%</div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--    <div class="container" style="padding-bottom:40px">-->
+<!--    <p>2021-22</p>-->
+<!--    <div class="progress">-->
+<!--        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 95%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">95%</div>-->
+<!--    </div>-->
+
+<!--</div>-->
+<!--</div>-->
+
+<div class="card text-center" style="margin-top:5rem;margin-bottom:3rem">
   <div class="card-body">
-    <h5 class="card-title">Our Placements</h5>
-    <p class="card-text">Percentage of students placed in different sessions!!</p>
+    <h5 class="card-title">Placement Graphs</h5>
   </div>
 </div>
 
 
-<div class="container" style="padding-bottom:40px;padding-top:40px">
-    <p>2019-20</p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 75%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">75%</div>
-    </div>
-  </div>
-    <div class="container" style="padding-bottom:40px">
-    <p>2020-21</p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: 85%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">85%</div>
-    </div>
-  </div>
-    <div class="container" style="padding-bottom:40px">
-    <p>2021-22</p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 95%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">95%</div>
-    </div>
-
+<div style="width:100%;margin:3rem;text-align: -webkit-center;">
+    <canvas id="Chart" style="width:100%;max-width:800px"></canvas>
+    <label><h3>Number of Placed Students</h3></label>
 </div>
+
+<div class="row">
+    <div class="col-md-6" style="padding:2rem;text-align: -webkit-center;">
+        <label><h3>Students Info Pie</h3></label>
+        <canvas id="myChart" style="width:100%;max-width:800px"></canvas>
+
+    </div>
+    <div class="col-md-6" style="padding:2rem;text-align: -webkit-center;">
+        <label><h3>Students Pakages</h3></label>
+        <canvas id="bar" style="width:100%;max-width:800px"></canvas>
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+var xValues = [
+{% for data in info_data %}
+"{{data[0]}}",
+{% endfor %}
+];
+var yValues = [
+{% for data in info_data %}
+{{data[1]}},
+{% endfor %}
+];
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797"
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Placement Info Pie"
+    }
+  }
+});
+</script>
+<script>
+
+var xValues = ["0-3", "3-5", "5-7", "7-10", "10+"];
+var yValues = [
+{% for package in pack %}
+{{package}},
+{% endfor %}
+];
+var barColors = ["red", "green","blue","orange","brown"];
+
+new Chart("bar", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "Package offered to Students"
+    }
+  }
+});
+
+</script>
+<script type="text/javascript">
+var xValues = [
+{% for data in num_data %}
+"{{data[0]}}",
+{% endfor %}
+];
+var yValues = [
+{% for data in num_data %}
+{{data[1]}},
+{% endfor %}
+];
+
+new Chart("Chart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      beginAtZero: true
+    }
+  }
+});
+</script>
 
 {% endblock %}

@@ -50,7 +50,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-md placement-info">
-                                    <label>{{ student.placement_info }}</label>
+                                    {% if student.placement %}
+                                        <label>Placed</label>
+                                    {% else %}
+                                        <label>{{ student.placement_info }}</label>
+                                    {% endif %}
                                 </div>
                                 {% if student.placement %}
                                     <div class="col-md placement-info">
