@@ -1,0 +1,123 @@
+<html>
+   <head>
+      <title>Google Charts Tutorial</title>
+      <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js">
+      </script>
+      <script type = "text/javascript">
+         google.charts.load('current', {packages: ['corechart']});
+      </script>
+     <style>
+       body {
+  margin: 10px 0 0 10px;
+  padding: 0;
+}
+h1 {
+  margin-top: 0;
+  padding-top: 0;
+}
+.bar {
+  fill: orange;
+}
+
+.axis-chart {
+  width: 300px;
+  height : auto;
+}
+     </style>
+   </head>
+
+   <body>
+
+   <div class='axis-chart'></div>
+<script>
+// From Mike Bostocks example: https://bl.ocks.org/mbostock/3048450
+var citiesUrl = 'https://codepen.io/codeschool/pen/OMJWrK.js';
+var margin = {
+    top: 10,
+    left: 35,
+    right: 10,
+    bottom: 45
+  },
+  options = {
+    height: 550 - margin.top - margin.bottom,
+    width: 800 - margin.left - margin.right
+  };
+
+d3.json(citiesUrl, createGraph);
+var barSelection;
+
+function createGraph(error, cities) {
+  var maxPopulation = d3.max(cities, function(city) {
+    return city.population;
+  });
+  var x = d3.scale.linear()
+    .domain([0, maxPopulation])
+    .range([0, options.width]);
+  var populations = cities.map(function(city) {
+    return city.population;
+  })
+  var data = d3.layout.histogram()
+    .bins(x.ticks(6))
+    (populations);
+
+  var y = d3.scale.linear()
+    .domain([0, d3.max(data, function(d) {
+      return d.y;
+    })])
+    .range([options.height, 0]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  var svg = d3.select('body').append('svg')
+    .attr("width", options.width + margin.left + margin.right)
+    .attr("height", options.height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var bar = svg.selectAll(".bar")
+    .data(data)
+    .enter().append("g")
+    .attr("class", "bar")
+    .attr("transform", function(d) {
+      return "translate(" + x(d.x) + "," + y(d.y) + ")";
+    });
+
+  bar.append("rect")
+    .attr("x", 1)
+    .attr("width", x(data[0].dx) - 1)
+    .attr("height", function(d) {
+      return options.height - y(d.y);
+    });
+
+
+   var yAxis = d3.svg.axis()
+    .scale(y)
+    .ticks(3)
+    .orient('left');
+
+svg.append("g")
+  .attr("class", "y axis")
+  .call(yAxis)
+  .append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("y", 6)
+  .attr("dy", ".71em")
+  .style("text-anchor", "end")
+  .text("Number of Cities");
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + options.height + ")")
+    .call(xAxis)
+    .append("text")
+      .attr("y", 35)
+      .attr("x", options.width / 2)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Population");
+}</script>
+   </body>
+
+</html>
