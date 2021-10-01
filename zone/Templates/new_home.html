@@ -81,9 +81,30 @@
 <!--</div>-->
 <!--</div>-->
 
+
+<div style="margin-left:15rem;margin-right:15rem;margin-top:8rem">
+    <div class="row">
+        <div class="vl col"><h4 style="font-size:2rem; padding:5px;">Recently Placed</h4></div>
+        <div class="col" style="text-align:end"><h4><a href="{{ url_for('placed_student_gallery') }}">View All</a></h4></div>
+    </div>
+
+    <div class="row" style="column-gap: 50px;justify-content: center;margin-top:3rem">
+        {% for student in placed_students %}
+            <div  class="col-md gallery-card">
+                    <img src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}" alt="Avatar" style="width:100%">
+                    <div>
+                        <H5 class="placement-name">{{student.name}}</H5>
+                        <h5 class="placement-package">{{student.package}}</h5>
+                    </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
 <div class="card text-center" style="margin-top:5rem;margin-bottom:3rem">
   <div class="card-body">
-    <h5 class="card-title">Placement Graphs</h5>
+    <h4 class="card-title" style="font-size:2rem">GRAPHS</h4>
   </div>
 </div>
 
@@ -93,9 +114,13 @@
     <label><h3>Number of Placed Students</h3></label>
 </div>
 
+<br>
+<br>
+<br>
+
 <div class="row">
     <div class="col-md-6" style="padding:2rem;text-align: -webkit-center;">
-        <label><h3>Students Info Pie</h3></label>
+        <label><h3>Students Info</h3></label>
         <canvas id="myChart" style="width:100%;max-width:800px"></canvas>
 
     </div>

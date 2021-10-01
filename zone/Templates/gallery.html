@@ -3,7 +3,7 @@
     <div class="container container-form" style="margin-bottom:10rem">
         <h1 style="text-align:center;margin:0.5rem">Placed Students</h1>
         <!-- button to add newly placed students -->
-        {% if session['user'] == 'student' %}
+        {% if session['user'] != 'student' %}
         <div style="display:flex">
             <button class="btn btn-primary add-new-button" data-toggle="modal" data-target="#ModalAddCenter">
                 Add new student

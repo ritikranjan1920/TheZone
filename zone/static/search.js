@@ -28,12 +28,16 @@ function filter() {
     var filter, data_div, div, label, value, count=0;
     filter = document.getElementById("filter");
     filter = filter.value.toUpperCase();
+    if(filter == "NOTPLACED")
+    filter = "NOT PLACED";
+    else if(filter == "NOTINTERESTED")
+    filter = "NOT INTERESTED"
     data_div = document.getElementById("data");
     div = data_div.getElementsByTagName("div");
     for (i = 0; i < div.length; i+=2) {
         label = div[i].getElementsByTagName("h5")[0];
         value = label.innerText;
-        if (value.toUpperCase().indexOf(filter) > -1) {
+        if (value.toUpperCase() == filter) {
             div[i].style.display = "";
             document.getElementById("hidden").style.display = "none";
             count = count+1;

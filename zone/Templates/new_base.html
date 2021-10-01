@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     {% block link %}
     {% endblock %}
 
@@ -45,10 +47,29 @@
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">
+                        {% if session['user']=='student' %}
+                            {% if student.seen_department=="False" or student.seen_crc=="False"%}
+                                <i class="fa fa-circle notification" style="font-size:0.6rem;" aria-hidden="true"></i>
+                            {% endif %}
+                        {% endif %}
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Announcements</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('announcements', by='CRC') }}">CRC</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('announcements', by='department') }}">Department</a></li>
+                            <li>
+                                {% if session['user']=='student' %}
+                                    {% if student.seen_crc=="False" %}
+                                        <i class="fa fa-circle notification" style="font-size:0.6rem" aria-hidden="true"></i>
+                                    {% endif %}
+                                {% endif %}
+                                <a class="dropdown-item" href="{{ url_for('announcements', by='CRC') }}">CRC</a>
+                            </li>
+                            <li>
+                                {% if session['user']=='student' %}
+                                    {% if student.seen_department=="False" %}
+                                        <i class="fa fa-circle" style="color:chocolate;bottom:25px;font-size:0.6rem;position:absolute;right:10px" aria-hidden="true"></i>
+                                    {% endif %}
+                                {% endif %}
+                                <a class="dropdown-item" href="{{ url_for('announcements', by='department') }}">Department</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

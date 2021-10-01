@@ -30,12 +30,17 @@ def check(n):
 @app.route("/")
 @app.route("/home")
 def home():
+    placed_students = PlacedStudent.query.all()[:4]
+    if current_user.is_authenticated:
+        student = Student.query.filter_by(user_id=current_user.user_id).first()
+    else:
+        student = None
     info_data = db.session.query(Student.placement_info, db.func.count(Student.placement_info)).group_by(Student.placement_info).all()
     d = datetime.date.today().day
     y = datetime.date.today().year
     m = datetime.date.today().month
     num_data = []
-    for i in range(2, d+1, 2):
+    for i in range(1, d+1, 2):
         s = db.session.query(db.func.count(PlacedStudent.date_placed)).filter((PlacedStudent.date_placed <= str(y)+'-'+check(m)+'-'+check(i))).all()[0][0]
         num_data.append((check(i), s))
     packages = db.session.query(PlacedStudent.package).all()
@@ -54,7 +59,7 @@ def home():
         else:
             pack[4] = pack[4] + 1
     print(pack)
-    return render_template('new_home.html', info_data=info_data, num_data=num_data, pack=pack)
+    return render_template('new_home.html', info_data=info_data, num_data=num_data, pack=pack, placed_students=placed_students, student=student)
 
 
 @app.route("/demo")
@@ -384,6 +389,10 @@ def account(user_id):
 def placed_student_gallery():
     form = PlacedStudentForm()
     placed_students = PlacedStudent.query.all()
+    if session['user'] == 'student':
+        student = Student.query.filter_by(user_id=current_user.user_id).first()
+    else:
+        student = None
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
@@ -401,14 +410,18 @@ def placed_student_gallery():
         db.session.commit()
         flash('Student Added', 'success')
         return redirect(url_for('placed_student_gallery'))
-    return render_template('gallery.html', placed_students=placed_students, form=form)
+    return render_template('gallery.html', placed_students=placed_students, form=form, student=student)
 
 
 @app.route("/students/<string:year>/<string:branch>")
 @login_required
 def students(year, branch):
+    if session['user'] == 'student':
+        student = Student.query.filter_by(user_id=current_user.user_id).first()
+    else:
+        student = None
     student_classmates = Student.query.filter_by(year=year, branch=branch).all()
-    return render_template('classmates.html', classmates=student_classmates)
+    return render_template('classmates.html', classmates=student_classmates, student=student)
 
 
 def save_notice(notice):
@@ -424,12 +437,23 @@ def save_notice(notice):
 @app.route("/announcements/<string:by>", methods=['GET', 'POST'])
 @login_required
 def announcements(by):
+    if session['user'] == 'student':
+        student = Student.query.filter_by(user_id=current_user.user_id).first()
+    else:
+        student = None
     page = request.args.get('page', 1, type=int)
     form = AnnouncementForm()
     if by == 'CRC':
         announcement = CRCAnnouncement.query.all()
+        if session['user'] == 'student':
+            print(student)
+            student.seen_crc = "True"
+            print(student.seen_crc)
     else:
         announcement = Announcement.query.all()
+        if session['user'] == 'student':
+            student.seen_department = "True"
+    db.session.commit()
     if session['user'] == 'student':
         by = 'not_allowed'
     print(len(announcement))
@@ -437,16 +461,21 @@ def announcements(by):
         if form.validate_on_submit():
             # file = request.files['inputFile']
             file = save_notice(form.pdf.data)
+            all_students = Student.query.all()
             print(file)
             if session['user'] == 'crc':
                 notice = CRCAnnouncement(title=form.title.data, date_issued=form.date.data, pdf=file)
+                for stud in all_students:
+                    stud.seen_crc = "False"
             elif session['user'] == 'department':
                 notice = Announcement(title=form.title.data, date_issued=form.date.data, pdf=file)
+                for stud in all_students:
+                    stud.seen_department = "False"
             db.session.add(notice)
             db.session.commit()
             flash('Announcement Made', 'success')
             return redirect(url_for('announcements', by=by))
-    return render_template('announcements.html', announcement=announcement, form=form, by=by.lower())
+    return render_template('announcements.html', announcement=announcement, form=form, by=by.lower(), student=student)
 
 
 @app.route("/delete/<int:item_id>")

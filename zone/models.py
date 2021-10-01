@@ -31,6 +31,8 @@ class Student(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     placement_info = db.Column(db.String(20), nullable=False, default="Not Placed")
     letter = db.Column(db.String(20))
+    seen_department = db.Column(db.String(6), nullable=False, default="False")
+    seen_crc = db.Column(db.String(6), nullable=False, default="False")
     projects = db.relationship('Project', backref='creator', lazy=True)
     placement = db.relationship('PlacedStudent', backref='placed')
 

@@ -9,7 +9,7 @@
         <hr>
         {% if classmates %}
         <div class="row">
-            <input class="col-md-7" type="text" id="myInput" onkeyup="myFunction();" placeholder="Search for names.." title="Type in a name">
+            <input class="col-md" type="text" id="myInput" onkeyup="myFunction();" placeholder="Search for names.." title="Type in a name">
             <div class="col-md-3">
                 <select id="filter" class="form-control-lg form-control" onchange="filter();">
                     <option value="filter">Filter</option>
@@ -18,7 +18,9 @@
                     <option value="NotInterested">Not Interested</option>
                 </select>
             </div>
-            <a style="height:fit-content;padding:10px;" id="csv" onclick="makeCSV();" href="" class="col-md-2 btn btn-secondary">Export Data</a>
+            {% if session['user'] != 'student'%}
+                <a style="height:fit-content;padding:10px;" id="csv" onclick="makeCSV();" href="" class="col-md-2 btn btn-secondary">Export Data</a>
+            {% endif %}
         </div>
 
         <div id="data" class="gallery-container">
