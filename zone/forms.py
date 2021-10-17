@@ -197,22 +197,6 @@ class PlacedStudentForm(FlaskForm):
             raise ValidationError('This student is already created!')
 
 
-# class PlacedStudentUpdateForm(FlaskForm):
-#     name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=20)])
-#     package = StringField('Package', validators=[DataRequired(), Length(1)])
-#     date_placed = DateField('Placement Date', validators=[DataRequired()])
-#     company_name = StringField('Company Name', validators=[DataRequired(), Length(min=2, max=30)])
-#     picture = FileField('Student Photo', validators=[FileAllowed(['jpg', 'png'])])
-#     roll_no = StringField('University Roll No', validators=[DataRequired(), Length(min=10, max=12)])
-#     submit = SubmitField('Save')
-#
-#     def validate_s_roll_no(self, roll_no):
-#         if roll_no.data != current_user.user_id:
-#             student = Student.query.filter_by(user_id=roll_no.data).first()
-#             if student:
-#                 raise ValidationError('Account with this Roll_no is already created')
-
-
 class ProjectForm(FlaskForm):
     project_title = StringField('Project Title', validators=[DataRequired(), Length(min=2, max=100)])
     project_picture = FileField('Project Photo', validators=[FileAllowed(['jpg', 'png'])])
