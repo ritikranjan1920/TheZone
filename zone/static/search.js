@@ -59,14 +59,14 @@ function filter() {
 
 
 function makeCSV() {
-    var csv = "Name,RollNo.,Placement Info\n";
+    var csv = "Roll No.,Name,Placement Info,Company Name,Package\n";
     var data_div, div, labels, value, count=0;
     data_div = document.getElementById("data");
     div = data_div.getElementsByTagName("div");
      for (i = 0; i < div.length; i+=2) {
         labels = div[i].getElementsByTagName("h5");
         if (div[i].style.display == "") {
-            csv = csv + labels[1].innerText + "," + labels[2].innerText + "," + labels[0].innerText;
+            csv = csv + labels[4].innerText + "," + labels[3].innerText + "," + labels[0].innerText + "," + labels[1].innerText + "," + labels[2].innerText;
         }
         csv = csv+"\n";
     }

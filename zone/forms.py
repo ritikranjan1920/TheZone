@@ -6,6 +6,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextF
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from zone.models import Student, Faculty, CRC, PlacedStudent, Result
+import re
 
 year = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')]
 placement_choice = [('0', 'Select'), ('Not Placed', 'Not Placed'), ('Placed', 'Placed'), ('Not Interested', 'Not Interested')]
@@ -14,16 +15,18 @@ placement_choice = [('0', 'Select'), ('Not Placed', 'Not Placed'), ('Placed', 'P
 class StudentRegistrationForm(FlaskForm):
     s_name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=20)])
     s_email = StringField('Email', validators=[DataRequired(), Email()])
-    s_roll_no = StringField('University Roll No.', validators=[DataRequired(), Length(min=10, max=12)])
+    s_roll_no = StringField('University Roll No.', validators=[DataRequired(), Length(min=10, max=13)])
     s_year = SelectField('Year', choices=year)
-    s_branch = StringField('Branch', validators=[DataRequired(), Length(min=2, max=30)])
-    s_clg_name = StringField('College Name', validators=[DataRequired(), Length(min=2, max=30)])
+    s_branch = StringField('Branch')
+    s_clg_name = StringField('College Name')
     s_mobile = StringField('Mobile No.', validators=[DataRequired(), Length(10)])
     s_password = PasswordField('Password', validators=[DataRequired()])
     s_confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('s_password', message='password must match')])
     s_submit = SubmitField('Sign Up')
 
     def validate_s_roll_no(self, roll_no):
+        if 13 != len(roll_no.data) != 10:
+            raise ValidationError('Please enter correct Roll No.')
         student = Student.query.filter_by(user_id=roll_no.data).first()
         if student:
             raise ValidationError('Account with this Roll_no is already created')
@@ -38,19 +41,35 @@ class StudentRegistrationForm(FlaskForm):
         if student:
             raise ValidationError('This mobile is already used')
 
+    def validate_s_password(self, password):
+        password = password.data
+        if len(password) < 8:
+            raise ValidationError('Password must be at least 8 characters')
+
+        if not re.search('[A-Z]', password):
+            raise ValidationError('Password must at least a capital letter')
+
+        if not re.search('[a-z]', password):
+            raise ValidationError('Password must at least a small letter')
+
+        if not re.search('[0-9]', password):
+            raise ValidationError('Password must at least a number')
+
 
 class DepartmentRegistrationForm(FlaskForm):
     d_name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=20)])
     d_email = StringField('Email', validators=[DataRequired(), Email()])
     d_emp_id = StringField('Employee ID.', validators=[DataRequired(), Length(min=10, max=12)])
-    d_clg_name = StringField('College Name', validators=[DataRequired(), Length(min=2, max=30)])
-    d_branch = StringField('Branch', validators=[DataRequired(), Length(min=2, max=30)])
+    d_clg_name = StringField('College Name')
+    d_branch = StringField('Branch')
     d_mobile = StringField('Mobile No.', validators=[DataRequired(), Length(10)])
     d_password = PasswordField('Password', validators=[DataRequired()])
-    d_confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('d_password', message='Password must match')])
+    d_confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('d_password', message='Passwords must match')])
     d_submit = SubmitField('Sign Up')
 
     def validate_d_emp_id(self, emp_id):
+        if not re.match('^[a-zA-Z0-9]+$', emp_id.data):
+            raise ValidationError('Please enter correct Emp ID.')
         faculty = Faculty.query.filter_by(user_id=emp_id.data).first()
         if faculty:
             raise ValidationError('Account with this Employee ID. is already created')
@@ -65,18 +84,34 @@ class DepartmentRegistrationForm(FlaskForm):
         if faculty:
             raise ValidationError('This mobile is already used')
 
+    def validate_d_password(self, password):
+        password = password.data
+        if len(password) < 8:
+            raise ValidationError('Password must be at least 8 characters')
+
+        if not re.search('[A-Z]', password):
+            raise ValidationError('Password must at least a capital letter')
+
+        if not re.search('[a-z]', password):
+            raise ValidationError('Password must at least a small letter')
+
+        if not re.search('[0-9]', password):
+            raise ValidationError('Password must at least a number')
+
 
 class CRCRegistrationForm(FlaskForm):
     c_name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=20)])
     c_email = StringField('Email', validators=[DataRequired(), Email()])
     c_emp_id = StringField('Employee ID.', validators=[DataRequired(), Length(min=10, max=12)])
-    c_clg_name = StringField('College Name', validators=[DataRequired(), Length(min=2, max=30)])
+    c_clg_name = StringField('College Name')
     c_mobile = StringField('Mobile No.', validators=[DataRequired(), Length(10)])
     c_password = PasswordField('Password', validators=[DataRequired()])
     c_confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('c_password', message='Password must match')])
     c_submit = SubmitField('Sign Up', )
 
     def validate_c_emp_id(self, emp_id):
+        if not re.match('^[a-zA-Z0-9]+$', emp_id.data):
+            raise ValidationError('Please enter correct Emp ID.')
         faculty = CRC.query.filter_by(user_id=emp_id.data).first()
         if faculty:
             raise ValidationError('Account with this Employee ID. is already created')
@@ -90,6 +125,20 @@ class CRCRegistrationForm(FlaskForm):
         faculty = CRC.query.filter_by(email=mobile.data).first()
         if faculty:
             raise ValidationError('This mobile is already used')
+
+    def validate_c_password(self, password):
+        password = password.data
+        if len(password) < 8:
+            raise ValidationError('Password must be at least 8 characters')
+
+        if not re.search('[A-Z]', password):
+            raise ValidationError('Password must at least a capital letter')
+
+        if not re.search('[a-z]', password):
+            raise ValidationError('Password must at least a small letter')
+
+        if not re.search('[0-9]', password):
+            raise ValidationError('Password must at least a number')
 
 
 class StudentLoginForm(FlaskForm):

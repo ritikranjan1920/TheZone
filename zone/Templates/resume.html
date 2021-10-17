@@ -28,7 +28,13 @@
                 <h5>Education</h5>
                 <hr style="background-color:#1C2833">
                 {% for institute in education %}
-                <label>{{ institute.start_date }} - {{ institute.end_date }}&nbsp;&nbsp;&nbsp;&nbsp;{{ institute.organisation_name }}</label><br>
+                    <label>{{ institute.start_date }} - {{ institute.end_date }}&nbsp;&nbsp;&nbsp;&nbsp;{{ institute.organisation_name }}</label><br>
+<!--                    <table style="border:0">-->
+<!--                        <tr>-->
+<!--                            <td style="border:0">{{ institute.start_date }} - {{ institute.end_date }}</td>-->
+<!--                            <td style="border:0;padding-left:15px">{{ institute.organisation_name }}</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
                 {% endfor %}
             {% endif %}
             <br>
@@ -40,7 +46,6 @@
                     {% if project.description %}
                         <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ project.description }}</p>
                     {% endif %}
-
                 {% endfor %}
             {% endif %}
             <br>

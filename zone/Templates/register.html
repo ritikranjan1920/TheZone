@@ -81,32 +81,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    {{ form.s_branch.label(class="form-control-label") }}
-                    {% if form.s_branch.errors %}
-                        {{ form.s_branch(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.s_branch.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.s_branch(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.s_clg_name.label(class="form-control-label") }}
-                    {% if form.s_clg_name.errors %}
-                        {{ form.s_clg_name(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.s_clg_name.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.s_clg_name(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
                     {{ form.s_password.label(class="form-control-label") }}
                     {% if form.s_password.errors %}
                         {{ form.s_password(class="form-control form-control-lg is-invalid") }}
@@ -116,7 +90,13 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.s_password(class="form-control form-control-lg") }}
+                        {{ form.s_password(class="form-control form-control-lg",onfocus='passWord();', onkeyup="validate();", onblur="change();") }}
+                        <div id="message" class="invalid-feedback" style="display:none;text-align:left">
+                            <span id="character" class="invalid">Minimum 8 characters &#160&#160&#160 </span>
+                            <span id="lower" class="invalid"> LowerCase &#160&#160&#160</span>
+                            <span id="upper" class="invalid"> UpperCase &#160&#160&#160</span>
+                            <span id="number" class="invalid"> Numbers</span>
+                        </div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -196,32 +176,6 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ department_form.d_branch.label(class="form-control-label") }}
-                    {% if department_form.d_branch.errors %}
-                        {{ department_form.d_branch(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in department_form.d_branch.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ department_form.d_branch(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ department_form.d_clg_name.label(class="form-control-label") }}
-                    {% if department_form.d_clg_name.errors %}
-                        {{ department_form.d_clg_name(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in department_form.d_clg_name.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ department_form.d_clg_name(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
                     {{ department_form.d_password.label(class="form-control-label") }}
                     {% if department_form.d_password.errors %}
                         {{ department_form.d_password(class="form-control form-control-lg is-invalid") }}
@@ -231,7 +185,13 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ department_form.d_password(class="form-control form-control-lg") }}
+                        {{ department_form.d_password(class="form-control form-control-lg",onfocus='passWord1();', onkeyup="validate1();", onblur="change1();") }}
+                        <div id="message1" class="invalid-feedback" style="display:none;text-align:left">
+                            <span id="character1" class="invalid">Minimum 8 characters &#160&#160&#160 </span>
+                            <span id="lower1" class="invalid"> LowerCase &#160&#160&#160</span>
+                            <span id="upper1" class="invalid"> UpperCase &#160&#160&#160</span>
+                            <span id="number1" class="invalid"> Numbers</span>
+                        </div>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -311,19 +271,6 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ crc_form.c_clg_name.label(class="form-control-label") }}
-                    {% if crc_form.c_clg_name.errors %}
-                        {{ crc_form.c_clg_name(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in crc_form.c_clg_name.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ crc_form.c_clg_name(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
                     {{ crc_form.c_password.label(class="form-control-label") }}
                     {% if crc_form.c_password.errors %}
                         {{ crc_form.c_password(class="form-control form-control-lg is-invalid") }}
@@ -333,7 +280,13 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ crc_form.c_password(class="form-control form-control-lg") }}
+                        {{ crc_form.c_password(class="form-control form-control-lg",onfocus='passWord2();', onkeyup="validate2();", onblur="change2();") }}
+                        <div id="message2" class="invalid-feedback" style="display:none;text-align:left">
+                            <span id="character2" class="invalid">Minimum 8 characters &#160&#160&#160 </span>
+                            <span id="lower2" class="invalid"> LowerCase &#160&#160&#160</span>
+                            <span id="upper2" class="invalid"> UpperCase &#160&#160&#160</span>
+                            <span id="number2" class="invalid"> Numbers</span>
+                        </div>
                     {% endif %}
                 </div>
                 <div class="form-group">

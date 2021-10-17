@@ -11,14 +11,15 @@
             </div>
         {% endif%}
         <hr>
-        {% if announcement %}
-            <div class="announcement-container"  style="margin-bottom:14rem">
-                {% for announce in announcement %}
-                    <div class="announcement-card" onclick="">
-                        {% if session['user'] == by%}
-                        <div style="text-align:end"><a style="color:#000" href="{{ url_for('delete', item_id=announce.id) }}"><i class="fa fa-trash" aria-hidden="true" ></i></a></div>
-                        {% endif%}
-                        <a href="/static/notices/{{ announce.pdf }}"  style="color:#000">
+        {% if announcement.items %}
+            <div class="announcement-container">
+
+                {% for announce in announcement.items %}
+                    <div class="announcement-card">
+                        {% if session['user'] == by %}
+                        <div style="text-align:end"><a data-toggle="modal" data-target="#{{announce.id}}deleteModal"><i class="fa fa-trash" aria-hidden="true" ></i></a></div>
+                        {% endif %}
+                        <a href="/static/notices/{{ announce.pdf }}" target="_blank" style="color:#000">
                             <h5 style="text-align:center;padding:5%">{{ announce.title }}</h5>
                         </a>
                         <hr>
@@ -26,20 +27,49 @@
                             <h5 style="padding:1%"><i class="fa fa-calendar" aria-hidden="true"></i> {{ announce.date_issued.strftime('%b %d, %Y') }}</h5>
                         </div>
                     </div>
+                    <div class="modal fade" id="{{announce.id}}deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Do you really want to delete it??
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <a class="btn btn-danger" style="color:#000" href="{{ url_for('delete', item_id=announce.id) }}">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
+
             </div>
+        <div align="center">
+            {% for page_num in announcement.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+                {% if page_num %}
+                    {% if page_num == announcement.page %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('placed_student_gallery', page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{ url_for('placed_student_gallery', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
         {% else %}
             <H3 style="margin-top:9.4rem; margin-bottom:9.3rem">No announcements</H3>
         {% endif %}
     </main>
-    <div>
 
-    </div>
     <div class="modal fade" id="ModalAddCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add new student</h5>
+                    <h5 class="modal-title">Announce</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

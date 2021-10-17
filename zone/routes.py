@@ -30,7 +30,7 @@ def check(n):
 @app.route("/")
 @app.route("/home")
 def home():
-    placed_students = PlacedStudent.query.all()[:4]
+    placed_students = PlacedStudent.query.order_by(PlacedStudent.id.desc())[:4]
     if current_user.is_authenticated:
         student = Student.query.filter_by(user_id=current_user.user_id).first()
     else:
@@ -58,7 +58,6 @@ def home():
             pack[3] = pack[3] + 1
         else:
             pack[4] = pack[4] + 1
-    print(pack)
     return render_template('new_home.html', info_data=info_data, num_data=num_data, pack=pack, placed_students=placed_students, student=student)
 
 
@@ -75,7 +74,6 @@ def login():
     department_form = DepartmentLoginForm()
     crc_form = CRCLoginForm()
     if form.s_submit.data:
-        print(1)
         if form.validate_on_submit():
             student = Student.query.filter_by(user_id=form.s_roll_no.data).first()
             if student and bcrypt.check_password_hash(student.password, form.s_password.data):
@@ -86,21 +84,17 @@ def login():
             else:
                 flash('Login Unsuccessful. Please check Roll_no and password', 'danger')
     elif department_form.d_submit.data:
-        print(2)
         if department_form.validate_on_submit():
             faculty = Faculty.query.filter_by(user_id=department_form.d_emp_id.data).first()
             if faculty and bcrypt.check_password_hash(faculty.password, department_form.d_password.data):
                 login_user(faculty, remember=department_form.d_remember.data)
-                print(current_user.user_id)
                 next_page = request.args.get('next')
                 session['user'] = 'department'
                 return redirect(next_page) if next_page else redirect(url_for('home'))
             else:
                 flash('Login Unsuccessful. Please check Roll_no and password', 'danger')
     elif crc_form.c_submit.data:
-        print(3)
         if crc_form.validate_on_submit():
-            print(4)
             faculty = CRC.query.filter_by(user_id=crc_form.c_emp_id.data).first()
             if faculty and bcrypt.check_password_hash(faculty.password, crc_form.c_password.data):
                 login_user(faculty, remember=crc_form.c_remember.data)
@@ -123,8 +117,7 @@ def register():
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.s_password.data).decode('utf-8')
             student = Student(name=form.s_name.data, email=form.s_email.data, user_id=form.s_roll_no.data,
-                              branch=form.s_branch.data, year=form.s_year.data, clg_name=form.s_clg_name.data,
-                              mobile=form.s_mobile.data, password=hashed_password)
+                              year=form.s_year.data, mobile=form.s_mobile.data, password=hashed_password)
             db.session.add(student)
             db.session.commit()
             flash(f'Account created for {form.s_name.data}!', 'success')
@@ -133,8 +126,7 @@ def register():
         if department_form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(department_form.d_password.data).decode('utf-8')
             faculty = Faculty(name=department_form.d_name.data, email=department_form.d_email.data,
-                              user_id=department_form.d_emp_id.data, branch=department_form.d_branch.data,
-                              clg_name=department_form.d_clg_name.data, mobile=department_form.d_mobile.data,
+                              user_id=department_form.d_emp_id.data, mobile=department_form.d_mobile.data,
                               password=hashed_password)
             db.session.add(faculty)
             db.session.commit()
@@ -144,8 +136,7 @@ def register():
         if crc_form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(crc_form.c_password.data).decode('utf-8')
             crc_faculty = CRC(name=crc_form.c_name.data, email=crc_form.c_email.data,
-                              user_id=crc_form.c_emp_id.data, clg_name=crc_form.c_clg_name.data,
-                              mobile=crc_form.c_mobile.data, password=hashed_password)
+                              user_id=crc_form.c_emp_id.data, mobile=crc_form.c_mobile.data, password=hashed_password)
             db.session.add(crc_faculty)
             db.session.commit()
             flash(f'Account created for {crc_form.c_name.data}!', 'success')
@@ -162,10 +153,9 @@ def crop_center(pil_img, crop_width, crop_height):
                          (img_height + crop_height) // 2))
 
 
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
+def save_picture(form_picture, name):
     _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
+    picture_fn = name + ".jpg"
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
 
     output_size = (200, 200)
@@ -231,7 +221,7 @@ def student_account(user_id):
             form_validated = form.validate_on_submit()
             if form_validated:
                 if form.s_picture.data:
-                    picture_file = save_picture(form.s_picture.data)
+                    picture_file = save_picture(form.s_picture.data, form.s_name.data)
                     student.image_file = picture_file
                 if form.letter.data:
                     file = save_pdf(form.letter.data, student.name, 'letter')
@@ -387,8 +377,9 @@ def account(user_id):
 @app.route("/placed_student_gallery", methods=['GET', 'POST'])
 @login_required
 def placed_student_gallery():
+    page = request.args.get('page', 1, type=int)
     form = PlacedStudentForm()
-    placed_students = PlacedStudent.query.all()
+    placed_students = PlacedStudent.query.paginate(page=page, per_page=16)
     if session['user'] == 'student':
         student = Student.query.filter_by(user_id=current_user.user_id).first()
     else:
@@ -396,10 +387,8 @@ def placed_student_gallery():
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            print(1)
         else:
             picture_file = None
-            print(form.picture.data)
         if form.noc.data:
             file = save_pdf(form.noc.data, form.roll_no.data, 'noc')
         else:
@@ -444,25 +433,21 @@ def announcements(by):
     page = request.args.get('page', 1, type=int)
     form = AnnouncementForm()
     if by == 'CRC':
-        announcement = CRCAnnouncement.query.all()
+        announcement = CRCAnnouncement.query.paginate(page=page, per_page=16)
         if session['user'] == 'student':
-            print(student)
             student.seen_crc = "True"
-            print(student.seen_crc)
     else:
-        announcement = Announcement.query.all()
+        announcement = Announcement.query.paginate(page=page, per_page=16)
         if session['user'] == 'student':
             student.seen_department = "True"
     db.session.commit()
     if session['user'] == 'student':
         by = 'not_allowed'
-    print(len(announcement))
     if form.announce.data:
         if form.validate_on_submit():
             # file = request.files['inputFile']
             file = save_notice(form.pdf.data)
             all_students = Student.query.all()
-            print(file)
             if session['user'] == 'crc':
                 notice = CRCAnnouncement(title=form.title.data, date_issued=form.date.data, pdf=file)
                 for stud in all_students:
@@ -520,12 +505,38 @@ def result_delete(user_id, sem):
 @app.route("/student/delete/<int:user_id>")
 @login_required
 def student_delete(user_id):
-    if session['user'] == 'crc' or session['user'] == 'department' or True:
+    if session['user'] == 'crc' or session['user'] == 'department':
         student = PlacedStudent.query.filter_by(student_id=user_id).first()
         db.session.delete(student)
         db.session.commit()
         flash('Student has been deleted successfully!', 'success')
         return redirect(url_for('placed_student_gallery'))
+    else:
+        return redirect(url_for("home"))
+
+
+@app.route("/education/delete/<int:user_id>/<int:education_id>")
+@login_required
+def education_delete(user_id, education_id):
+    if str(user_id) == str(current_user.user_id):
+        education = Education.query.get(education_id)
+        db.session.delete(education)
+        db.session.commit()
+        flash('Education has been deleted successfully!', 'success')
+        return redirect(url_for('student_account', user_id=user_id))
+    else:
+        return redirect(url_for("home"))
+
+
+@app.route("/certificate/delete/<int:user_id>/<int:certificate_id>")
+@login_required
+def certificate_delete(user_id, certificate_id):
+    if str(user_id) == str(current_user.user_id):
+        certificate = Certificates.query.get(certificate_id)
+        db.session.delete(certificate)
+        db.session.commit()
+        flash('Certificate has been deleted successfully!', 'success')
+        return redirect(url_for('student_account', user_id=user_id))
     else:
         return redirect(url_for("home"))
 

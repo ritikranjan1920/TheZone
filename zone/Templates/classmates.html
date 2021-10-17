@@ -28,8 +28,12 @@
             <div class="gallery-card">
                 {% if student.placement %}
                     <h5 style="display:none">Placed</h5>
+                    <h5 style="display:none">{{ student.placement.company_name }}</h5>
+                    <h5 style="display:none">{{ student.placement.package }}</h5>
                 {% else %}
                     <h5 style="display:none">{{ student.placement_info }}</h5>
+                    <h5 style="display:none">NA</h5>
+                    <h5 style="display:none">NA</h5>
                 {% endif %}
                 <a href="/student_account/{{ student.user_id }}">
                     <img src="{{ url_for('static', filename='profile_pics/' + student.image_file) }}" alt="Avatar" style="width:100%">
@@ -38,6 +42,7 @@
                         <h5 class="placement-package">{{student.user_id}}</h5>
                     </div>
                 </a>
+
             </div>
             {% endfor %}
         </div>
